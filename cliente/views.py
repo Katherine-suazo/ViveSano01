@@ -4,5 +4,5 @@ from .models import Cliente
 
 def lista_clientes(request):
     clientes = Cliente.objects.all()
-    return render(request, 'cliente/clientes.html', {'clientes': clientes} )
+    return render(request, 'cliente/cliente.html', {'clientes': clientes} )
 

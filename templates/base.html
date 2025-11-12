@@ -1,20 +1,21 @@
-<!-- con esto se puede heredar desde cualquier app -->
-
-<!-- {% extends "base.html" %}
-{% block content %} ... {% endblock %} -->
-
-<!-- -------------------------------------------- -->
-
-<!-- {% load static %} -->
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{% block title %}Document{% endblock %}</title>
 </head>
+
 <body>
     <h1>Plantilla base</h1>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
 </body>
+
 </html>
