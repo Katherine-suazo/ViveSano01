@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Empleado(models.Model):
-    id_empleado = models.AutoField(primary_key=True)
     nombre_empleado = models.CharField(max_length=100, null = False, blank = False)
     apellido_empleado = models.CharField(max_length=100, null = False, blank = False)
     usuario_empleado = models.CharField(max_length=100, null = False, blank = False)
@@ -11,3 +10,4 @@ class Empleado(models.Model):
 
     def __str__(self):
         return f"{self.nombre_empleado} {self.apellido_empleado}"
+    

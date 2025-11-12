@@ -4,7 +4,6 @@ from django.db import models
 # null = true    permite que el campo pueda quedar vacio en la base de datos
 
 class Cliente(models.Model):
-    id_cliente = models.AutoField(primary_key=True)
     nombre_cliente = models.CharField(max_length=100, null = False, blank = False)
     apellido_Cliente = models.CharField(max_length=100, null = False, blank = False)
     direccion_cliente = models.CharField(max_length=200)
@@ -13,3 +12,12 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f"{self.nombre_cliente} {self.apellido_Cliente}"
+    
+
+
+
+# 1. crear modelo
+# 2. crear vistas
+# 3. crear urls
+# 4. crear plantillas
+
