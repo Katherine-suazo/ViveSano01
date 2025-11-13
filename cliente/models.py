@@ -15,7 +15,6 @@ class Cliente(models.Model):
     
 
 
-
 # 1. crear modelo
 # 2. crear vistas
 # 3. crear urls
