@@ -6,12 +6,23 @@
 
 <h3>Registrar empleado</h3>
 
-<form action="" method="post" >
-
-    {{ formulario }}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ formulario_ingreso }}
     <input type="submit" value="Iniciar sesion">
-
 </form>
+
+{% for e in empleados %}
+
+<div>
+    <div>
+
+        <h3>{{ e.nombre_empleado }}</h3>
+
+    </div>
+</div>
+
+{% endfor %}
 
 
 {% endblock %}
