@@ -26,6 +26,7 @@ def lista_empleados(request):
     
 
 def continuar_registro(request):
+    # hacer get
     context = {}
     context['formulario_registro'] = EmpleadoFormCompleto
     return render(request, 'empleado/registroEmpleado.html', context)
