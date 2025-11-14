@@ -4,6 +4,6 @@ from .models import Empleado
 
 def lista_empleados(request):
     empleados = Empleado.objects.all()
-    return render(request, 'empleado/empleado.html', {'empleados': empleados})
+    return render(request, 'empleado/ingresoEmpleado.html', {'empleados': empleados})
 
 
