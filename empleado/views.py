@@ -48,7 +48,7 @@ def registro_empleado(request):
 def home(request):
     return render(request, 'empleado/home.html')
 
-
-        # empleados = Empleado.objects.all()
-        # empleados = Empleado.objects.raw("select * from empleado_empleado")
     
+
+# empleados = Empleado.objects.all()
+# empleados = Empleado.objects.raw("select * from empleado_empleado")
