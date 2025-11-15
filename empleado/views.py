@@ -5,8 +5,7 @@ from .forms import EmpleadoFormCompleto
 
 # leer de derecha a izquierda
 
-def lista_empleados(request):
-    print(request)
+def ingreso_empleado(request):
     context = {}
 
     if request.method == 'GET':
@@ -22,33 +21,34 @@ def lista_empleados(request):
             return redirect('home')
         else:
             print("No existe")
-            return redirect('continuar_registro')
+            return redirect('registro_empleado')
     
 
-def continuar_registro(request):
-    # hacer get
+def registro_empleado(request):
     context = {}
-    context['formulario_registro'] = EmpleadoFormCompleto
-    return render(request, 'empleado/registroEmpleado.html', context)
 
-    #post
-    # formulario_recibido = EmpleadoForm(request.POST)
-    # datos = formulario_recibido.data
-    # Empleado.objects.create(
-        #     usuario_empleado = datos['usuario'],
-        #     contrasena_empleado = datos['contraseña'],
-        #     nombre_empleado = datos['nombre_empleado'],
-        #     apellido_empleado = datos['apellido_empleado'],
-        #     rol_empleado = datos['rol_empleado'],
-        # )
-        # return redirect('home')
+    if request.method == 'GET':
+        context['formulario_registro'] = EmpleadoFormCompleto
+        return render(request, 'empleado/registroEmpleado.html', context)
+
+    if request.method == 'POST':
+        formulario_recibido = EmpleadoFormCompleto(request.POST)
+        datos = formulario_recibido.data
+        Empleado.objects.create(
+                usuario_empleado = datos['usuario'],
+                contrasena_empleado = datos['contraseña'],
+                nombre_empleado = datos['nombre_empleado'],
+                apellido_empleado = datos['apellido_empleado'],
+                rol_empleado = datos['rol_empleado'],
+            )
+        print("Cliente registrado")
+        return redirect('home')
 
 
 def home(request):
     return render(request, 'empleado/home.html')
 
-
-
-        # empleados = Empleado.objects.all()
-        # empleados = Empleado.objects.raw("select * from empleado_empleado")
     
+
+# empleados = Empleado.objects.all()
+# empleados = Empleado.objects.raw("select * from empleado_empleado")

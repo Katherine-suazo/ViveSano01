@@ -3,7 +3,7 @@ from empleado import views
 
 
 urlpatterns = [
-    path('', views.lista_empleados, name = 'lista_empleados'),
-    path('/continuar_registro', views.continuar_registro, name = 'continuar_registro'),
-    path('/home', views.home, name = 'home')
+    path('', views.ingreso_empleado, name = 'ingreso_empleado'),
+    path('registro_empleado/', views.registro_empleado, name = 'registro_empleado'),
+    path('home/', views.home, name = 'home')
 ]

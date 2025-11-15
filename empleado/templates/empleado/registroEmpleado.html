@@ -4,11 +4,12 @@
 {% block content %}
 
 
-<h3>Usuario No existe</h3>
+<h3>Usuario No existe, Registrate</h3>
 
 <form action="" method="post">
     {% csrf_token %}
     {{ formulario_registro }}
+
     <input type="submit" value="Iniciar sesion">
 </form>
 
