@@ -4,16 +4,16 @@
 {% block content %}
 
 
-<h3>No estas registrado, Registrate!</h3>
+<h3>Registrar Cliente</h3>
 
 <form action="" method="post">
     {% csrf_token %}
     {{ formulario_registro }}
 
-    <input type="submit" value="Iniciar sesion">
+    <input type="submit" value="Registrar">
 </form>
 
-<a href="/">Volver al formulario</a>
+<a href="/home">Volver al inicio</a>
 
 
 
