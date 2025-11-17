@@ -35,13 +35,13 @@ def registro_empleado(request):
         formulario_recibido = EmpleadoFormCompleto(request.POST)
         datos = formulario_recibido.data
         Empleado.objects.create(
-                usuario_empleado = datos['usuario'],
-                contrasena_empleado = datos['contraseña'],
-                nombre_empleado = datos['nombre_empleado'],
-                apellido_empleado = datos['apellido_empleado'],
-                rol_empleado = datos['rol_empleado'],
-            )
-        print("Cliente registrado")
+            usuario_empleado = datos['usuario'],
+            contrasena_empleado = datos['contraseña'],
+            nombre_empleado = datos['nombre_empleado'],
+            apellido_empleado = datos['apellido_empleado'],
+            rol_empleado = datos['rol_empleado'],
+        )
+        print("Empleado registrado")
         return redirect('home')
 
 
