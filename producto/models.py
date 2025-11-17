@@ -14,9 +14,8 @@ class Producto(models.Model):
     stock_producto = models.IntegerField(null = False, blank = False)
     fecha_vencimiento_producto = models.DateField(null = True, blank = True)
     descripcion_producto = models.TextField(null = True, blank = True)
-
     categoria_producto = models.ForeignKey(CategoriaProducto, on_delete = models.CASCADE, null=True)
 
     def __str__(self):
-        return f"{self.nombre_producto} - Precio: {self.precio_producto}"
+        return self.nombre_producto
     

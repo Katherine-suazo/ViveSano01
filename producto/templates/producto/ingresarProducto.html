@@ -3,17 +3,16 @@
 
 {% block content %}
 
-<a href="/home">Volver al inicio</a> <br>
+<a href="/productos/listaProductos/">volver atras</a> <br>
 
 <h3>Nuevo Producto</h3>
 
 <form action="" method="post">
 
-    {% csrf_token %}
-    {{ formulario_ingreso }}
-    
-    <input type="submit" value="Guardar">
-    <button><a href=""></a></button>
+  {% csrf_token %}
+  {{ formulario_registro }}
+
+  <input type="submit" value="Registrar">
 
 </form>
 

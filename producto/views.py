@@ -25,29 +25,31 @@ def ingresar_producto(request):
 
     if request.method == 'GET':
         context['formulario_registro'] = ProductoForm
-        return render(request, 'producto/ingresarCategoria.html', context)
+        return render(request, 'producto/ingresarProducto.html', context)
     
     if request.method == 'POST':
         formulario_recibido = ProductoForm(request.POST)
         datos = formulario_recibido.data
+        categoria = CategoriaProducto.objects.get(pk=datos['categoria_producto'])
         Producto.objects.create(
             nombre_producto = datos['nombre_producto'],
             precio_producto = datos['precio_producto'],
             stock_producto = datos['stock_producto'],
             fecha_vencimiento_producto = datos['fecha_vencimiento_producto'],
             descripcion_producto = datos['descripcion_producto'],
-            categoria_producto = datos['categoria_producto'],
+            categoria_producto = categoria,
         )
         print("Producto registrado")
-        return redirect('listaProductos')
+        return render(request, 'producto/listaProductos.html')
     
 
 def lista_productos(request):
     productos = Producto.objects.all()
-    return render(request, 'producto/listaProductos.html', {'productos': productos})
-
-
-def lista_categorias(request):
     categorias = CategoriaProducto.objects.all()
-    return render(request, 'producto/listaProductos.html', {'categorias': categorias})
+    return render(request, 'producto/listaProductos.html', {'productos': productos, 'categorias': categorias})
+
+
+# def lista_categorias(request):
+#     categorias = CategoriaProducto.objects.all()
+#     return render(request, 'producto/listaProductos.html', {'categorias': categorias})
  
