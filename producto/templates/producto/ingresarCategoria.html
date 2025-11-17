@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<a href="/productos/listaProductos/">volver atras</a> <br>
+
+<h2>Nueva Categoría</h2>
+
+<form action="" method="post">
+
+  {% csrf_token %}
+  {{ formulario_registro }}
+
+  <input type="submit" value="Registrar">
+
+</form>
+
+
+
+{% endblock %}
