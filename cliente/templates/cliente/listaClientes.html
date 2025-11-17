@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<a href="/home">Volver al inicio</a>
+
+<h3>Lista de clientes</h3>
+
+<hr>
+
+{% for x in clientes %}
+
+<div>
+    <h4>{{ x.nombre_cliente }} {{ x.apellido_cliente }}</h4>
+    <p>- Alergias: {{ x.alergia_cliente }}</p>
+</div>
+
+{% endfor %}
+
+
+
+{% endblock %}

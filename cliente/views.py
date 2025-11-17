@@ -22,6 +22,8 @@ def registro_clientes(request):
         )
         print('Cliente registrado')
         return redirect('home')
+    
 
-    # clientes = Cliente.objects.all()
-    # return render(request, 'cliente/cliente.html', {'clientes': clientes})
+def lista_clientes(request):
+    clientes = Cliente.objects.all()
+    return render(request, 'cliente/listaClientes.html', {'clientes': clientes})

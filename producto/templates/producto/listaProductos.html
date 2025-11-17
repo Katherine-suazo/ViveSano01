@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<a href="/home">Volver al inicio</a> <br>
+
+<hr>
+
+<a href="/productos/ingresarProducto">Ingresar productos</a> <br>
+<h3>Lista de Productos</h3>
+
+{% for x in productos %}
+
+<div>
+    <h4>{{ x.nombre_producto }} / {{ x.precio_producto }}</h4>
+    <p>{{ x.descripcion_producto }} - {{ x.stock_producto }} - venc:{{ x.fecha_vencimiento_producto }} - </p>
+    <p>{{ x.categoria_producto }}</p>
+</div>
+
+{% endfor %}
+
+
+
+<hr>
+
+<a href="/productos/ingresarCategoria">Añadir nueva categoria</a> <br>
+<h3>Categorias</h3>
+
+{% for x in categorias %}
+
+<div>
+    <h4>{{ x.nombre_categoria }}</h4>
+</div>
+
+{% endfor %}
+
+
+
+{% endblock %}
