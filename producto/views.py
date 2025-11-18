@@ -4,24 +4,32 @@ from django.db import IntegrityError
 from .forms import ProductoForm, CategoriaForm
 from .models import Producto, CategoriaProducto
 
-
+# __iexact = ignora mat¿yusculas y minusculas (hola Hola HOLA) 
+# __exact = el valor debe ser identico (Hola = Hola)
 
 def ingresar_categoria(request):
     context = {}
 
     if request.method == 'GET':
-        context['formulario_registro'] = CategoriaForm
+        context['formulario_registro'] = CategoriaForm()
         return render(request, 'producto/ingresarCategoria.html', context)
 
     if request.method == 'POST':
         formulario_recibido = CategoriaForm(request.POST)
-        datos = formulario_recibido.data
-        CategoriaProducto.objects.create(
-            nombre_categoria = datos['nombre_categoria']
-        )
-        print('Categoria ingresada')
-        return redirect('lista_productos')
+
+        if formulario_recibido.is_valid():
+            nombre = formulario_recibido.cleaned_data['nombre_categoria']
+
+            if CategoriaProducto.objects.filter(nombre_categoria__iexact = nombre).exists():
+                return render(request,'producto/ingresarCategoria.html', {'formulario_registro': formulario_recibido, 'error': 'La categoría ya existe'})
+
+            CategoriaProducto.objects.create(nombre_categoria = nombre)
+            print('Categoría ingresada')
+            return redirect('lista_productos')
+
+        return render(request, 'producto/ingresarCategoria.html', {'formulario_registro': formulario_recibido})
     
+
 
 def ingresar_producto(request):
     context = {}
@@ -32,20 +40,30 @@ def ingresar_producto(request):
     
     if request.method == 'POST':
         formulario_recibido = ProductoForm(request.POST)
-        datos = formulario_recibido.data
-        categoria = CategoriaProducto.objects.get(pk=datos['categoria_producto'])
-        Producto.objects.create(
-            nombre_producto = datos['nombre_producto'],
-            precio_producto = datos['precio_producto'],
-            stock_producto = datos['stock_producto'],
-            fecha_vencimiento_producto = datos['fecha_vencimiento_producto'],
-            descripcion_producto = datos['descripcion_producto'],
-            categoria_producto = categoria,
-        )
+
+        if formulario_recibido.is_valid():
+            datos = formulario_recibido.cleaned_data
+            nombre_pro = datos['nombre_producto']
+
+            if Producto.objects.filter(nombre_producto__iexact = nombre_pro).exists():
+                return render(request,'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido, 'error': 'El producto ya existe'})
+
+            # categoria = CategoriaProducto.objects.get(pk=datos['categoria_producto'])
+            categoria = datos['categoria_producto']
+            Producto.objects.create(
+                nombre_producto = datos['nombre_producto'],
+                precio_producto = datos['precio_producto'],
+                stock_producto = datos['stock_producto'],
+                fecha_vencimiento_producto = datos['fecha_vencimiento_producto'],
+                descripcion_producto = datos['descripcion_producto'],
+                categoria_producto = categoria,
+            )
         print("Producto registrado")
-        # return render(request, 'producto/listaProductos.html')
         return redirect('lista_productos')
     
+    return render(request,'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
+    
+
 
 def lista_productos(request):
     productos = Producto.objects.all()
