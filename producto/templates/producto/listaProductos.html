@@ -17,6 +17,12 @@
     <h4>{{ x.nombre_producto }} / {{ x.precio_producto }}</h4>
     <p>{{ x.descripcion_producto }} - {{ x.stock_producto }} - venc:{{ x.fecha_vencimiento_producto }} - </p>
     <p>{{ x.categoria_producto }}</p>
+
+    <form action="{% url 'eliminar_producto' x.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+    </form>
+
 </div>
 
 {% endfor %}
@@ -32,6 +38,10 @@
 
 <div>
     <p>{{ x.nombre_categoria }}</p>
+    <form action="{% url 'eliminar_categoria' x.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+    </form>
 </div>
 
 {% endfor %}

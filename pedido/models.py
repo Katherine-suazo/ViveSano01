@@ -16,7 +16,7 @@ class Pedido(models.Model):
 
 
     def __str__(self):
-        return f"Pedido {self.id} - Cliente: {self.cliente_pedido.nombre_cliente} {self.cliente_pedido.apellido_Cliente} - Empleado: {self.empleado_pedido.nombre_empleado} {self.empleado_pedido.apellido_empleado}"
+        return f"Pedido {self.id} - Cliente: {self.cliente_pedido.nombre_cliente} {self.cliente_pedido.apellido_cliente} - Empleado: {self.empleado_pedido.nombre_empleado} {self.empleado_pedido.apellido_empleado}"
     
 
 
