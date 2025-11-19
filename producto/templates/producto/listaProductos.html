@@ -20,6 +20,7 @@
         <tr>
             <th>Nombre</th>
             <th>Precio</th>
+            <th>Categoria</th>
             <th>Stock</th>
             <th>Acciones</th>
         </tr>
@@ -27,8 +28,9 @@
     <tbody>
         {% for p in productos %}
         <tr>
-            <td><a href="">{{ p.nombre_producto }}</a></td>
+            <td>{{ p.nombre_producto }}</td>
             <td>{{ p.precio_producto }}</td>
+            <td>{{ p.categoria_producto }}</td>
             <td>{{ p.stock_producto }}</td>
             <td>
                 <a class="btn btn-sm btn-primary" href="">Editar</a>
@@ -58,11 +60,8 @@
     <tbody>
         {% for c in categorias %}
         <tr>
-            <td><a href="">{{ c.nombre_categoria }}</a></td>
-            <td>
-                <a class="btn btn-sm btn-primary" href="">Editar</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_categoria' c.id %}">Eliminar</a>
-            </td>
+            <td>{{ c.nombre_categoria }}</td>
+            <td><a class="btn btn-sm btn-danger" href="{% url 'eliminar_categoria' c.id %}">Eliminar</a></td>
         </tr>
         {% empty %}
         <tr><td colspan="4">No hay categorias.</td></tr>

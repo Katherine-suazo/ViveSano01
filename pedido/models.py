@@ -4,6 +4,11 @@ from cliente.models import Cliente
 from empleado.models import Empleado
 from producto.models import Producto
 
+# 1. crear modelo
+# 2. crear vistas
+# 3. crear urls
+# 4. crear plantillas
+
 
 class Pedido(models.Model):
     estado_pedido = models.CharField(max_length=50, null = False, blank = False)

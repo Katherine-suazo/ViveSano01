@@ -15,14 +15,16 @@ def ingreso_empleado(request):
     if request.method == 'POST':
         formulario_recibido = EmpleadoForm(request.POST)
         datos = formulario_recibido.data
-        empleado = Empleado.objects.raw("select * from empleado_empleado where usuario_empleado = %s", [datos['usuario']])
+        # empleado = Empleado.objects.raw("select * from empleado_empleado where usuario_empleado = %s", [datos['usuario']])
+        empleado = Empleado.objects.filter(usuario_empleado = datos['usuario']).first()
         if empleado:
             print("existe")
+            request.session['empleado_id'] = empleado.id
             return redirect('home')
         else:
             print("No existe")
             return redirect('registro_empleado')
-    
+        
 
 def registro_empleado(request):
     context = {}
@@ -46,7 +48,15 @@ def registro_empleado(request):
 
 
 def home(request):
-    return render(request, 'empleado/home.html')
+    empleado_id = request.session.get('empleado_id')
+    empleado = None
+    if empleado_id:
+        try:
+            empleado = Empleado.objects.get(pk=empleado_id)
+        except Empleado.DoesNotExist:
+            empleado = None
+
+    return render(request, 'empleado/home.html',  {'perfil': empleado.nombre_empleado})
 
     
 
