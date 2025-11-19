@@ -27,3 +27,5 @@ Thumbs.db
 .eggs/
 *.egg-info/
 /cliente/__pycache__
+/pycache/*
+pycache/*
