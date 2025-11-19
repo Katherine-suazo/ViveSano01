@@ -21,7 +21,7 @@ def registro_clientes(request):
             alergia_cliente = datos['alergia_cliente'],
         )
         print('Cliente registrado')
-        return redirect('home')
+        return redirect('lista_clientes')
     
 
 def lista_clientes(request):

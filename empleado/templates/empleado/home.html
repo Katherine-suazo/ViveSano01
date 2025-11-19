@@ -1,17 +1,31 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+
+{% block title %}Panel{% endblock %}
 
 {% block content %}
 
-<h1>Home</h1>
-<p></p>
 
-<h3>Usuario ingreso exitosamente</h3>
+<h2>Bienvenido{% if empleado %}, {{ empleado.nombre_empleado }}{% endif %}</h2>
+<hr>
 
-<a href="/clientes/">Registrar cliente</a> <br>
-<a href="/clientes/listaClientes/">Lista de clientes</a> <br>
-<a href="/productos/listaProductos/">Productos</a> <br>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" href="/clientes/listaClientes/">Clientes</a>
+            <a class="list-group-item list-group-item-action" href="/productos/listaProductos/">Productos</a>
+            <a class="list-group-item list-group-item-action" href="">Pedidos</a>
+            <a class="list-group-item list-group-item-action" href="">Inventario</a>
+            <a class="list-group-item list-group-item-action" href="">Reportes</a>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <p>Panel rápido y accesos directos.</p>
+    </div>
+</div>
 
 
 
 {% endblock %}
+

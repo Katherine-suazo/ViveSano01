@@ -90,12 +90,12 @@ def lista_productos(request):
 def eliminar_categoria(request, id):
     categoria = get_object_or_404(CategoriaProducto, id=id)
 
-    if request.method == 'POST':
-        if Producto.objects.filter(categoria_producto=categoria).exists():
-            messages.error(request, 'No se puede eliminar. Existen productos asociados.')
-        else:
-            categoria.delete()
-            messages.success(request, 'La categoría se eliminó correctamente.')
+    # if request.method == 'POST':
+    if Producto.objects.filter(categoria_producto=categoria).exists():
+        messages.warning(request, 'No se puede eliminar. Existen productos asociados.')
+    else:
+        categoria.delete()
+        messages.success(request, 'La categoría se eliminó correctamente.')
 
     return redirect('lista_productos')
 
@@ -103,8 +103,8 @@ def eliminar_categoria(request, id):
 def eliminar_producto(request, id):
     producto = get_object_or_404(Producto, id=id)
 
-    if request.method == 'POST':
-        producto.delete()
+    # if request.method == 'POST':
+    producto.delete()
     return redirect('lista_productos')
 
         # if Producto.objects.filter(categoria_producto=categoria).exists():

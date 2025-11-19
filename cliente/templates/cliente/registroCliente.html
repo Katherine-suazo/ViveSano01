@@ -1,20 +1,14 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+{% block title %}Cliente Form{% endblock %}
 
 {% block content %}
-
-<a href="/home">Volver al inicio</a> <br>
-<hr>
-
-<h3>Registrar Cliente</h3>
-
-<form action="" method="post">
+<h2>Crear Cliente</h2>
+<form method="post">
     {% csrf_token %}
     {{ formulario_registro }}
-
-    <input type="submit" value="Registrar">
+    <button class="btn btn-primary" type="submit">Guardar</button>
 </form>
-
-
+<a class="btn btn-secondary" href="/listaClientes/">Cancelar</a>
 
 {% endblock %}
