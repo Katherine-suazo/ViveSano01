@@ -1,22 +1,17 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Producto Form{% endblock %}
+
 {% block content %}
-
-<a href="/productos/listaProductos/">Volver Atrás</a> <br>
-
-<h3>Ingresar Nuevo Producto</h3>
-
-<form action="" method="post">
-
-  {% csrf_token %}
-  {{ formulario_registro }}
-
-  <input type="submit" value="Registrar">
-
+<h2>Registrar Producto</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ formulario_registro }}
+    <button class="btn btn-primary" type="submit">Guardar</button>
 </form>
-
 <p>{{ error }}</p>
 
+<a class="btn btn-secondary" href="/productos/listaProductos/">Cancelar</a>
 
 {% endblock %}

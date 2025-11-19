@@ -1,23 +1,17 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Categoria Form{% endblock %}
+
 {% block content %}
-
-<a href="/productos/listaProductos/">volver atrás</a> <br>
-
-<h2>Nueva Categoría</h2>
-
-<form action="" method="post">
-
-  {% csrf_token %}
-  {{ formulario_registro }}
-
-  <input type="submit" value="Registrar">
-
+<h2>Nueva Categoria</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ formulario_registro }}
+    <button class="btn btn-primary" type="submit">Guardar</button>
 </form>
-
 <p>{{ error }}</p>
 
-
+<a class="btn btn-secondary" href="/productos/listaProductos/">Cancelar</a>
 
 {% endblock %}
