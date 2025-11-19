@@ -1,51 +1,72 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+{% block title %}Productos y Categorias{% endblock %}
 
 {% block content %}
-
-
-<a href="/home">Volver al inicio</a> <br>
-
-<hr>
-
-<a href="/productos/ingresarProducto">Ingresar nuevo producto</a> <br>
-<h3>Lista de Productos</h3>
-
-{% for x in productos %}
-
-<div>
-    <h4>{{ x.nombre_producto }} / {{ x.precio_producto }}</h4>
-    <p>{{ x.descripcion_producto }} - {{ x.stock_producto }} - venc:{{ x.fecha_vencimiento_producto }} - </p>
-    <p>{{ x.categoria_producto }}</p>
-
-    <form action="{% url 'eliminar_producto' x.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Eliminar producto</button>
-    </form>
-
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Productos y Categorias</h2>
+    <a class="btn btn-success" href="/productos/ingresarProducto">Ingresar Producto</a>
+    <a class="btn btn-success" href="/productos/ingresarCategoria">Ingresar Categoria</a>
 </div>
-
-{% endfor %}
-
-
-
-<hr>
-
-<a href="/productos/ingresarCategoria">Añadir nueva categoria</a> <br>
-<h3>Categorias</h3>
-
-{% for x in categorias %}
-
-<div>
-    <p>{{ x.nombre_categoria }}</p>
-    <form action="{% url 'eliminar_categoria' x.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Eliminar</button>
-    </form>
 </div>
+<form class="mt-3 mb-3">
+    <div class="input-group">
+        <input name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar productos...">
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td><a href="">{{ p.nombre_producto }}</a></td>
+            <td>{{ p.precio_producto }}</td>
+            <td>{{ p.stock_producto }}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="">Editar</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_producto' p.id %}">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay productos.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-{% endfor %}
 
-
-
+<form class="mt-3 mb-3">
+    <div class="input-group">
+        <input name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar productos...">
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in categorias %}
+        <tr>
+            <td><a href="">{{ c.nombre_categoria }}</a></td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="">Editar</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_categoria' c.id %}">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay categorias.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

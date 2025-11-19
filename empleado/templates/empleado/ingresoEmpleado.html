@@ -1,16 +1,18 @@
-{% extends "base.html" %}
+
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Ingresar{% endblock %}
+
 {% block content %}
-
-
-<h3>Registrar empleado</h3>
-
-<form action="" method="post">
-    {% csrf_token %}
-    {{ formulario_ingreso }}
-    <input type="submit" value="Iniciar sesion">
-</form>
-
-
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Ingresar</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ formulario_ingreso }}
+            <button class="btn btn-primary" type="submit">Ingresar</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
