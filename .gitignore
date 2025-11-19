@@ -1,0 +1,28 @@
+# Django-specific files
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media/  # If you store user-uploaded media files here
+static_collected/ # If you use `collectstatic` and want to ignore the collected files
+
+# Virtual Environment
+.env/
+venv/
+env/
+
+# IDE-specific files (e.g., PyCharm)
+.idea/
+*.iml
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Other files
+.coverage
+.tox/
+.eggs/
+*.egg-info/
