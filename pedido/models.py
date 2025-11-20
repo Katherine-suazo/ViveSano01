@@ -7,7 +7,7 @@ from producto.models import Producto
 # 1. crear modelo
 # 2. crear vistas
 # 3. crear urls
-# 4. crear plantillas
+# 4. crear plantilla
 
 
 class Pedido(models.Model):
