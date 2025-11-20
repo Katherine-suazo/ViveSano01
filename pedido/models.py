@@ -12,8 +12,8 @@ from producto.models import Producto
 
 class Pedido(models.Model):
     estado_pedido = models.CharField(max_length=50, null = False, blank = False)
-    fecha_creacion_pedido = models.DateTimeField(auto_now_add=True)
-    fecha_entrega_pedido = models.DateTimeField(null = True, blank = True)
+    fecha_creacion_pedido = models.DateField(auto_now_add=True)
+    fecha_entrega_pedido = models.DateField(null = True, blank = True)
     total_pedido = models.DecimalField(max_digits=10, decimal_places=2, null = False, blank = False)
 
     cliente_pedido = models.ForeignKey(Cliente, on_delete=models.CASCADE)
