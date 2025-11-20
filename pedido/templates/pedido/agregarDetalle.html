@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Agregar producto al pedido{% endblock %}
+
+{% block content %}
+
+<h2>Agregar producto al pedido #{{ pedido.id }}</h2>
+
+<p><strong>Cliente:</strong> {{ pedido.cliente_pedido }}</p>
+<p><strong>Estado:</strong> {{ pedido.estado_pedido }}</p>
+
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+    {{ formulario_recibido.as_p }}
+    <button class="btn btn-primary" type="submit">Agregar</button>
+    <a class="btn btn-secondary" href="{% url 'detalle_pedido' pedido.id %}">Cancelar</a>
+</form>
+
+{% endblock %}

@@ -3,18 +3,22 @@
 {% block title %}Productos y Categorias{% endblock %}
 
 {% block content %}
+
+
 <div class="d-flex justify-content-between align-items-center">
-    <h2>Productos y Categorias</h2>
+    <h2>Productos</h2>
     <a class="btn btn-success" href="/productos/ingresarProducto">Ingresar Producto</a>
-    <a class="btn btn-success" href="/productos/ingresarCategoria">Ingresar Categoria</a>
 </div>
-</div>
+
+
 <form class="mt-3 mb-3">
     <div class="input-group">
         <input name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar productos...">
         <button class="btn btn-outline-secondary" type="submit">Buscar</button>
     </div>
 </form>
+
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -44,9 +48,14 @@
 </table>
 
 
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Categorias</h2>
+    <a class="btn btn-success" href="/productos/ingresarCategoria">Ingresar Categoria</a>
+</div>
+
 <form class="mt-3 mb-3">
     <div class="input-group">
-        <input name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar productos...">
+        <input name="busqueda" value="{{ busqueda }}" class="form-control" placeholder="Buscar categorias...">
         <button class="btn btn-outline-secondary" type="submit">Buscar</button>
     </div>
 </form>
