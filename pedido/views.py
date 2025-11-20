@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect, get_list_or_404
-from .models import Pedido
-from .forms import PedidoForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Pedido, DetallePedido
+from .forms import PedidoForm, DetallePedidoForm
+from producto.models import Producto
 
 
 def lista_pedidos(request):
@@ -21,8 +22,7 @@ def crear_pedido(request):
             Pedido.objects.create(
                 cliente_pedido = formulario_recibido.cleaned_data['cliente_pedido'],
                 estado_pedido = formulario_recibido.cleaned_data['estado_pedido'],
-                fecha_entrega_pedido = formulario_recibido.cleaned_data['fecha_entrega'],
-                total_pedido = formulario_recibido.cleaned_data['total_pedido'],
+                fecha_entrega_pedido = formulario_recibido.cleaned_data['fecha_entrega_pedido'],
                 empleado_pedido = formulario_recibido.cleaned_data['empleado_pedido'],
             )
             print("Pedido Realizado")
@@ -30,3 +30,57 @@ def crear_pedido(request):
         
         return render(request, 'pedido/crearPedido.html', {'formulario_ingreso': formulario_recibido})
 
+
+def agregar_detalle_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        formulario_recibido = DetallePedidoForm(request.POST)
+
+        if formulario_recibido.is_valid():
+            producto = formulario_recibido.cleaned_data['producto_detalle']
+            cantidad = formulario_recibido.cleaned_data['cantidad_detalle']
+
+            if producto.stock_producto < cantidad:
+                formulario_recibido.add_error('cantidad_detalle', 'No hay stock suficiente para este producto.')
+            else:
+                DetallePedido.objects.create(
+                    pedido_detalle = pedido,
+                    producto_detalle = producto,
+                    cantidad_detalle = cantidad,
+                    precio_unitario_detalle = producto.precio_producto
+                )
+
+                producto.stock_producto -= cantidad
+                producto.save()
+
+                pedido.total_pedido += producto.precio_producto * cantidad
+                pedido.save()
+
+                return redirect('detalle_pedido', pedido_id = pedido.id)
+    else:
+        formulario_recibido = DetallePedidoForm()
+
+    return render(request, 'pedido/agregarDetalle.html', {'pedido': pedido, 'formulario_recibido': formulario_recibido,})
+
+
+def detalle_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id = pedido_id)
+    detalles = pedido.detallepedido_set.select_related('producto_detalle')
+    return render(request, 'pedido/detallePedido.html', {'pedido': pedido, 'detalles': detalles})
+
+
+def cancelar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    detalles = pedido.detallepedido_set.select_related('producto_detalle')
+
+    for d in detalles:
+        producto = d.producto_detalle
+        producto.stock_producto += d.cantidad_detalle
+        producto.save()
+
+    pedido.estado_pedido = 'CANCELADO'
+    pedido.total_pedido = 0
+    pedido.save()
+
+    return redirect('detalle_pedido', pedido_id=pedido.id)
