@@ -1,6 +1,7 @@
 from django import forms
 from .models import Pedido, DetallePedido
 from cliente.models import Cliente
+from empleado.models import Empleado
 
 
 class PedidoForm(forms.Form):
@@ -11,8 +12,8 @@ class PedidoForm(forms.Form):
         ('ENTREGADO', 'Entregado'),
         ('CANCELADO', 'Cancelado'),
     ]
-
-    estado_pedido = forms.CharField(label = 'Estado', required = True, choices = ESTADO_CHOICES, widget = forms.Select(attrs={'class': 'form-control'}))
-    fecha_entrega = forms.DateTimeField(label = 'Fecha entrega', required = True, widget = forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}))
+    cliente_pedido = forms.ModelChoiceField(label = 'Cliente', queryset = Cliente.objects.all(), widget = forms.Select(attrs = {'class': 'form-control'}))
+    estado_pedido = forms.ChoiceField(label = 'Estado', required = True, choices = ESTADO_CHOICES, widget = forms.Select(attrs={'class': 'form-control'}))
+    fecha_entrega_pedido = forms.DateField(label = 'Fecha entrega', required = True, widget = forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
     total_pedido = forms.DecimalField(label = 'Total', required = True, max_digits = 10, decimal_places = 2, widget = forms.NumberInput(attrs={'class': 'form-control'}))
-    cliente_pedido = forms.ChoiceField(label = 'Cliente', queryset = Cliente.objects.all(), widget = forms.Select(attrs = {'class': 'form-control'}))
+    empleado_pedido = forms.ModelChoiceField(label = 'Registrado por', queryset = Empleado.objects.all(), widget = forms.Select(attrs = {'class': 'form-control'}))
