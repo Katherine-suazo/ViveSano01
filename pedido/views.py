@@ -87,9 +87,9 @@ def cancelar_pedido(request, pedido_id):
 
 
 
-def eliminar_pedido(request, id):
-    pedido = get_object_or_404(Pedido, id = id)
+# def eliminar_pedido(request, id):
+#     pedido = get_object_or_404(Pedido, id = id)
 
-    if pedido.estado_pedido == 'CANCELADO':
-        pedido.delete()
-        
+#     if pedido.estado_pedido == 'CANCELADO':
+#         pedido.delete()
+#         message.
