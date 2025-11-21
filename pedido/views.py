@@ -84,3 +84,12 @@ def cancelar_pedido(request, pedido_id):
     pedido.save()
 
     return redirect('detalle_pedido', pedido_id=pedido.id)
+
+
+
+def eliminar_pedido(request, id):
+    pedido = get_object_or_404(Pedido, id = id)
+
+    if pedido.estado_pedido == 'CANCELADO':
+        pedido.delete()
+        

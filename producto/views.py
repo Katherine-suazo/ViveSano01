@@ -101,7 +101,7 @@ def eliminar_categoria(request, id):
 
 
 def eliminar_producto(request, id):
-    producto = get_object_or_404(Producto, id=id)
+    producto = get_object_or_404(Producto, id = id)
 
     # if request.method == 'POST':
     producto.delete()
