@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 from .models import Empleado
 from .forms import EmpleadoForm
 from .forms import EmpleadoFormCompleto
@@ -14,16 +16,29 @@ def ingreso_empleado(request):
 
     if request.method == 'POST':
         formulario_recibido = EmpleadoForm(request.POST)
-        datos = formulario_recibido.data
-        # empleado = Empleado.objects.raw("select * from empleado_empleado where usuario_empleado = %s", [datos['usuario']])
-        empleado = Empleado.objects.filter(usuario_empleado = datos['usuario']).first()
-        if empleado:
-            print("existe")
-            request.session['empleado_id'] = empleado.id
-            return redirect('home')
+
+        if formulario_recibido.is_valid():
+            datos = formulario_recibido.cleaned_data
+            # empleado = Empleado.objects.filter(usuario_empleado = datos['usuario']).first()
+            empleado = authenticate(request, usuario_empleado = datos['usuario_empleado'], contrasena_empleado = datos['contrasena_empleado'])
+
+            if empleado is not None:
+                if empleado.is_active:
+                    login(request, empleado)
+                    return HttpResponse(['Empleado autenticado'])
+                # request.session['empleado_id'] = empleado.id
+                # return redirect('home')
+            else:
+                return HttpResponse('El usuario no esta activo')
+            
         else:
-            print("No existe")
-            return redirect('registro_empleado')
+            return HttpResponse('La informacion no es correcta')
+        
+    else:
+        formulario_recibido = EmpleadoForm()
+        return render(request, 'empleado/ingresoEmpleado.html', {'formulario_recibido': formulario_recibido})
+
+
         
 
 def registro_empleado(request):

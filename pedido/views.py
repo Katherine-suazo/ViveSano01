@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Pedido, DetallePedido
 from .forms import PedidoForm, DetallePedidoForm
 from producto.models import Producto
@@ -87,9 +88,14 @@ def cancelar_pedido(request, pedido_id):
 
 
 
-# def eliminar_pedido(request, id):
-#     pedido = get_object_or_404(Pedido, id = id)
+def eliminar_pedido(request, id):
+    pedido = get_object_or_404(Pedido, id = id)
 
-#     if pedido.estado_pedido == 'CANCELADO':
-#         pedido.delete()
-#         message.
+    if pedido.estado_pedido == 'CANCELADO':
+        pedido.delete()
+        messages.success(request, 'El pedido fue eliminado')
+
+    else:
+        messages.warning(request, 'El pedido no puede ser eliminado')
+
+    return redirect('lista_pedidos')
