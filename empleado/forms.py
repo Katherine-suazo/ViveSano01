@@ -1,42 +1,18 @@
 from django import forms
 from .models import Empleado, ROLES_CHOICES
 
+
 class EmpleadoForm(forms.Form):
-    usuario = forms.CharField(
-        label='Usuario',
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'})
-    )
-    contrasena = forms.CharField(
-        label='Contraseña',
-        required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
-    )
+    usuario = forms.CharField(label='Usuario', required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}))
+    contrasena = forms.CharField(label='Contraseña', required=True, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
 
 
 class EmpleadoFormCompleto(forms.Form):
     usuario = forms.CharField(label='Usuario', required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario'}))
-    contrasena = forms.CharField(
-        label='Contraseña',
-        required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
-    )
-    nombre_empleado = forms.CharField(
-        label='Nombres',
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombres'})
-    )
-    apellido_empleado = forms.CharField(
-        label='Apellidos',
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellidos'})
-    )
-    rol_empleado = forms.ChoiceField(
-        label='Rol',
-        required=True,
-        choices=ROLES_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
+    contrasena = forms.CharField(label='Contraseña', required=True, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
+    nombre_empleado = forms.CharField(label='Nombres', required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombres'}))
+    apellido_empleado = forms.CharField(label='Apellidos', required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellidos'}))
+    rol_empleado = forms.ChoiceField(label='Rol',  required=True, choices=ROLES_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def clean_usuario(self):
         usuario = self.cleaned_data.get('usuario')

@@ -4,6 +4,7 @@ from .models import Empleado
 from .forms import EmpleadoForm, EmpleadoFormCompleto
 from .decorators import empleado_login_required
 
+
 def ingreso_empleado(request):
     if request.method == 'POST':
         form = EmpleadoForm(request.POST)
@@ -28,10 +29,8 @@ def ingreso_empleado(request):
                 'formulario_recibido': form,
                 'error': 'Usuario o contraseña incorrectos'
             })
-
     else:
         form = EmpleadoForm()
-
     return render(request, 'empleado/ingresoEmpleado.html', {'formulario_recibido': form})
 
 

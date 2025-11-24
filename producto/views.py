@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db import IntegrityError
 from .forms import ProductoForm, CategoriaForm
 from .models import Producto, CategoriaProducto
 
-# __iexact = ignora mat¿yusculas y minusculas (hola Hola HOLA) 
+# __iexact = ignora mayusculas y minusculas (hola Hola HOLA) 
 # __exact = el valor debe ser identico (Hola = Hola)
 
 def ingresar_categoria(request):
@@ -71,22 +70,8 @@ def lista_productos(request):
     return render(request, 'producto/listaProductos.html', {'productos': productos, 'categorias': categorias})
 
 
-# def lista_categorias(request):
-#     categorias = CategoriaProducto.objects.all()
-#     return render(request, 'producto/listaProductos.html', {'categorias': categorias})
- 
 
-# def eliminar_categoria(request, id):
-#     categoria = get_object_or_404(CategoriaProducto, id=id)
 
-#     if request.method == 'POST':
-#         try:
-#             categoria.delete()
-#             messages.success(request, 'La categoria se elimino correctamente.')
-#         except IntegrityError:
-#             messages.error(request, 'No se puede eliminar. Existen productos asociados.')
-#     return redirect('productos/listaProductos/')
-    
 def eliminar_categoria(request, id):
     categoria = get_object_or_404(CategoriaProducto, id=id)
 
@@ -102,16 +87,61 @@ def eliminar_categoria(request, id):
 
 def eliminar_producto(request, id):
     producto = get_object_or_404(Producto, id = id)
-
-    # if request.method == 'POST':
     producto.delete()
     return redirect('lista_productos')
 
-        # if Producto.objects.filter(categoria_producto=categoria).exists():
-        #     messages.error(request, 'No se puede eliminar. Existen productos asociados.')
-        # else:
-        #     categoria.delete()
-        #     messages.success(request, 'La categoría se eliminó correctamente.')
+
+def editar_producto(request, id):
+    producto = get_object_or_404(Producto, id = id)
+
+    if request.method == 'POST':
+        formulario_recibido = ProductoForm(request.POST)
+
+        if formulario_recibido.is_valid():
+            datos = formulario_recibido.cleaned_data
+
+            producto.nombre_producto = datos['nombre_producto']
+            producto.precio_producto = datos['precio_producto']
+            producto.stock_producto = datos['stock_producto']
+            producto.fecha_vencimiento_producto = datos['fecha_vencimiento_producto']
+            producto.descripcion_producto = datos['descripcion_producto']
+            producto.categoria_producto = datos['categoria_producto']
+            
+            producto.save()
+            return redirect('lista_productos')
+        
+    else:
+        formulario_recibido = ProductoForm(initial = {
+            'nombre_producto': producto.nombre_producto,
+            'precio_producto': producto.precio_producto,
+            'stock_producto': producto.stock_producto,
+            'fecha_vencimiento_producto': producto.fecha_vencimiento_producto,
+            'descripcion_producto': producto.descripcion_producto,
+            'categoria_producto': producto.categoria_producto,
+        })
+
+    return render(request, 'producto/editarProducto.html', {'formulario_recibido': formulario_recibido, 'producto': producto})
 
     
         
+
+
+
+
+
+        
+# def lista_categorias(request):
+#     categorias = CategoriaProducto.objects.all()
+#     return render(request, 'producto/listaProductos.html', {'categorias': categorias})
+ 
+
+# def eliminar_categoria(request, id):
+#     categoria = get_object_or_404(CategoriaProducto, id=id)
+
+#     if request.method == 'POST':
+#         try:
+#             categoria.delete()
+#             messages.success(request, 'La categoria se elimino correctamente.')
+#         except IntegrityError:
+#             messages.error(request, 'No se puede eliminar. Existen productos asociados.')
+#     return redirect('productos/listaProductos/')

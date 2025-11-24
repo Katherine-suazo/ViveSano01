@@ -37,7 +37,7 @@
             <td>{{ p.categoria_producto }}</td>
             <td>{{ p.stock_producto }}</td>
             <td>
-                <a class="btn btn-sm btn-primary" href="">Editar</a>
+                <a class="btn btn-sm btn-primary" href="{% url 'editar_producto' p.id %}">Editar</a>
                 <a class="btn btn-sm btn-danger" href="{% url 'eliminar_producto' p.id %}">Eliminar</a>
             </td>
         </tr>
