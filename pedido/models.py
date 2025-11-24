@@ -21,10 +21,16 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido {self.id} - Cliente: {self.cliente_pedido.nombre_cliente} {self.cliente_pedido.apellido_cliente} - Empleado: {self.empleado_pedido.nombre_empleado} {self.empleado_pedido.apellido_empleado}"
     
+    class Meta():
+        verbose_name = "Pedido"
+        verbose_name_plural = "Pedidos"
+
     @property
     def productos_resumen(self):
         detalles = self.detallepedido_set.all()
         return ", ".join(f"{d.producto_detalle.nombre_producto} (x{d.cantidad_detalle})" for d in detalles)
+
+
 
 class DetallePedido(models.Model):
     cantidad_detalle = models.IntegerField(null = False, blank = False)
@@ -35,6 +41,10 @@ class DetallePedido(models.Model):
     def __str__(self):
         return f"DetallePedido {self.id} - Producto: {self.producto_detalle} - Cantidad: {self.cantidad_detalle}"
     
+    class Meta():
+        verbose_name = "DetallePedido"
+        verbose_name_plural = "DetallesPedidos"
+
     @property
     def subtotal(self):
         return self.cantidad_detalle * self.precio_unitario_detalle

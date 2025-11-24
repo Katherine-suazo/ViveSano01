@@ -13,6 +13,10 @@ class Cliente(models.Model):
     def __str__(self):
         return f"{self.nombre_cliente} {self.apellido_cliente}"
     
+    class Meta():
+        verbose_name = "Cliente"
+        verbose_name_plural = "Clientes"
+    
 
 
 # 1. crear modelo
