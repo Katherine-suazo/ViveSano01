@@ -5,9 +5,11 @@ from .forms import PedidoForm, DetallePedidoForm
 from producto.models import Producto
 
 
+
 def lista_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request, 'pedido/listaPedidos.html', {'pedidos': pedidos})
+
 
 
 def crear_pedido(request):
@@ -32,6 +34,7 @@ def crear_pedido(request):
         return render(request, 'pedido/crearPedido.html', {'formulario_ingreso': formulario_recibido})
 
 
+
 def agregar_detalle_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
@@ -51,7 +54,6 @@ def agregar_detalle_pedido(request, pedido_id):
                     cantidad_detalle = cantidad,
                     precio_unitario_detalle = producto.precio_producto
                 )
-
                 producto.stock_producto -= cantidad
                 producto.save()
 
@@ -65,10 +67,12 @@ def agregar_detalle_pedido(request, pedido_id):
     return render(request, 'pedido/agregarDetalle.html', {'pedido': pedido, 'formulario_recibido': formulario_recibido,})
 
 
+
 def detalle_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id = pedido_id)
     detalles = pedido.detallepedido_set.select_related('producto_detalle')
     return render(request, 'pedido/detallePedido.html', {'pedido': pedido, 'detalles': detalles})
+
 
 
 def cancelar_pedido(request, pedido_id):
@@ -94,7 +98,6 @@ def eliminar_pedido(request, id):
     if pedido.estado_pedido == 'CANCELADO':
         pedido.delete()
         messages.success(request, 'El pedido fue eliminado')
-
     else:
         messages.warning(request, 'El pedido no puede ser eliminado')
 

@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cliente',
-    'empleado',
+    'empleado.apps.EmpleadoConfig',
     'inventario',
     'pedido',
     'producto',
@@ -119,3 +119,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/' # url para acceder a las imagenes
 MEDIA_ROOT = os.path.join(BASE_DIR, "media") # para guardar las imagenes en la carpeta media
+
+
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'

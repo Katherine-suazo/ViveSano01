@@ -1,18 +1,30 @@
-
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Ingresar{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2>Ingresar</h2>
+
         <form method="post">
             {% csrf_token %}
-            {{ formulario_ingreso }}
+
+            {% for field in formulario_recibido %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
             <button class="btn btn-primary" type="submit">Ingresar</button>
         </form>
+
+        {% if error %}
+        <div class="text-danger mt-3">{{ error }}</div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
+
