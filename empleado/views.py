@@ -72,7 +72,6 @@ def cerrar_sesion(request):
 
 @empleado_login_required
 def solicitar_reserva(request):
-    # Allow prefilling the product via GET ?producto=<id>
     producto_prefill = request.GET.get('producto')
 
     if request.method == 'GET':
@@ -85,7 +84,6 @@ def solicitar_reserva(request):
             if producto_obj and producto_obj.stock_producto <= 0:
                 form = ReservaForm(initial={'producto': producto_obj.id})
             else:
-                # If product has stock, don't prefill and show a warning in template
                 form = ReservaForm()
                 return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'El producto seleccionado tiene stock disponible y no se puede reservar.'})
 
@@ -103,7 +101,6 @@ def solicitar_reserva(request):
         cantidad = datos['cantidad']
         comentario = datos.get('comentario')
 
-        # Enforce business rule: only allow reservation if product has no stock
         if producto.stock_producto > 0:
             return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'No se puede reservar un producto que tiene stock disponible.'})
 
@@ -129,7 +126,6 @@ def lista_reservas(request):
 
 @empleado_login_required
 def confirmar_reserva(request, reserva_id):
-    # Only allow POST to change state
     if request.method != 'POST':
         return redirect('lista_reservas')
 
@@ -138,14 +134,11 @@ def confirmar_reserva(request, reserva_id):
     except Reserva.DoesNotExist:
         return redirect('lista_reservas')
 
-    # Only an empleado can confirm; optionally check permissions
     if reserva.estado == Reserva.ESTADO_RESERVADO:
         return redirect('lista_reservas')
 
     producto = reserva.producto
-    # Check if sufficient stock (usually reservation created when stock <=0)
-    # If stock is negative or zero, we still allow marking as reserved and decrease stock accordingly
-    # In normal flow, confirming a reservation would allocate stock (subtract)
+
     producto.stock_producto = producto.stock_producto - reserva.cantidad
     producto.save()
 
@@ -167,7 +160,6 @@ def cancelar_reserva(request, reserva_id):
     except Reserva.DoesNotExist:
         return redirect('lista_reservas')
 
-    # If already reserved, optionally restore stock
     if reserva.estado == Reserva.ESTADO_RESERVADO:
         producto = reserva.producto
         producto.stock_producto = producto.stock_producto + reserva.cantidad

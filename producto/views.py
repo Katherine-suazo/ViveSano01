@@ -132,10 +132,6 @@ def editar_producto(request, id):
     
         
 
-
-
-
-
         
 # def lista_categorias(request):
 #     categorias = CategoriaProducto.objects.all()
