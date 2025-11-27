@@ -20,3 +20,10 @@ class PedidoForm(forms.Form):
 class DetallePedidoForm(forms.Form):
     producto_detalle = forms.ModelChoiceField(label = 'Producto', queryset = Producto.objects.all(), widget = forms.Select(attrs = {'class': 'form-control'}))
     cantidad_detalle = forms.IntegerField(label = 'Cantidad', min_value = 1, widget = forms.NumberInput(attrs = {'class': 'form-control'}))
+
+
+class ReservaForm(forms.Form):
+    cliente = forms.ModelChoiceField(label='Cliente', queryset=Cliente.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    producto = forms.ModelChoiceField(label='Producto', queryset=Producto.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    cantidad = forms.IntegerField(label='Cantidad', min_value=1, initial=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    comentario = forms.CharField(label='Comentario', required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))

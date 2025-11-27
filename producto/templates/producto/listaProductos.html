@@ -26,6 +26,7 @@
             <th>Precio</th>
             <th>Categoria</th>
             <th>Stock</th>
+            <th>Fecha Vencimiento</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -36,9 +37,13 @@
             <td>{{ p.precio_producto }}</td>
             <td>{{ p.categoria_producto }}</td>
             <td>{{ p.stock_producto }}</td>
+            <td>{% if p.fecha_vencimiento_producto %}{{ p.fecha_vencimiento_producto }}{% else %}-{% endif %}</td>
             <td>
                 <a class="btn btn-sm btn-primary" href="{% url 'editar_producto' p.id %}">Editar</a>
                 <a class="btn btn-sm btn-danger" href="{% url 'eliminar_producto' p.id %}">Eliminar</a>
+                {% if p.stock_producto <= 0 %}
+                <a class="btn btn-sm btn-warning" href="{% url 'solicitar_reserva' %}?producto={{ p.id }}">Solicitar Reserva</a>
+                {% endif %}
             </td>
         </tr>
         {% empty %}

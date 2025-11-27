@@ -48,3 +48,31 @@ class DetallePedido(models.Model):
     @property
     def subtotal(self):
         return self.cantidad_detalle * self.precio_unitario_detalle
+
+
+class Reserva(models.Model):
+    ESTADO_SOLICITADO = 'SOLICITADO'
+    ESTADO_RESERVADO = 'RESERVADO'
+    ESTADO_CANCELADO = 'CANCELADO'
+
+    ESTADO_CHOICES = [
+        (ESTADO_SOLICITADO, 'Solicitado'),
+        (ESTADO_RESERVADO, 'Reservado'),
+        (ESTADO_CANCELADO, 'Cancelado'),
+    ]
+
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
+    cantidad = models.IntegerField(null=False, blank=False, default=1)
+    fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    fecha_reserva = models.DateField(null=True, blank=True)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default=ESTADO_SOLICITADO)
+    comentario = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Reserva {self.id} - {self.producto.nombre_producto} x{self.cantidad} para {self.cliente} ({self.estado})"
+
+    class Meta:
+        verbose_name = "Reserva"
+        verbose_name_plural = "Reservas"

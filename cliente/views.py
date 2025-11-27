@@ -3,8 +3,10 @@ from django.contrib import messages
 from .models import Cliente
 from .forms import ClienteForm
 from pedido.models import Pedido
+from empleado.decorators import empleado_login_required
 
 
+@empleado_login_required
 def registro_clientes(request):
     context = {}
 
@@ -26,12 +28,14 @@ def registro_clientes(request):
         return redirect('lista_clientes')
     
 
+@empleado_login_required
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'cliente/listaClientes.html', {'clientes': clientes})
 
 
 
+@empleado_login_required
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id = id)
 
@@ -43,6 +47,7 @@ def eliminar_cliente(request, id):
     return redirect('lista_clientes')
 
 
+@empleado_login_required
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id = id)
 

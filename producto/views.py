@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import ProductoForm, CategoriaForm
 from .models import Producto, CategoriaProducto
+from empleado.decorators import empleado_login_required
 
 # __iexact = ignora mayusculas y minusculas (hola Hola HOLA) 
 # __exact = el valor debe ser identico (Hola = Hola)
 
+@empleado_login_required
 def ingresar_categoria(request):
     context = {}
 
@@ -30,11 +32,12 @@ def ingresar_categoria(request):
     
 
 
+@empleado_login_required
 def ingresar_producto(request):
     context = {}
 
     if request.method == 'GET':
-        context['formulario_registro'] = ProductoForm
+        context['formulario_registro'] = ProductoForm()
         return render(request, 'producto/ingresarProducto.html', context)
     
     if request.method == 'POST':
@@ -64,6 +67,7 @@ def ingresar_producto(request):
     
 
 
+@empleado_login_required
 def lista_productos(request):
     productos = Producto.objects.all()
     categorias = CategoriaProducto.objects.all()
@@ -72,6 +76,7 @@ def lista_productos(request):
 
 
 
+@empleado_login_required
 def eliminar_categoria(request, id):
     categoria = get_object_or_404(CategoriaProducto, id=id)
 
@@ -85,12 +90,14 @@ def eliminar_categoria(request, id):
     return redirect('lista_productos')
 
 
+@empleado_login_required
 def eliminar_producto(request, id):
     producto = get_object_or_404(Producto, id = id)
     producto.delete()
     return redirect('lista_productos')
 
 
+@empleado_login_required
 def editar_producto(request, id):
     producto = get_object_or_404(Producto, id = id)
 

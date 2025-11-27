@@ -3,6 +3,10 @@ from django.contrib.auth.hashers import check_password, make_password
 from .models import Empleado
 from .forms import EmpleadoForm, EmpleadoFormCompleto
 from .decorators import empleado_login_required
+from pedido.forms import ReservaForm
+from pedido.models import Reserva
+from producto.models import Producto
+from cliente.models import Cliente
 
 
 def ingreso_empleado(request):
@@ -64,6 +68,115 @@ def home(request):
 def cerrar_sesion(request):
     request.session.pop('empleado_id', None)
     return redirect('ingreso_empleado')
+
+
+@empleado_login_required
+def solicitar_reserva(request):
+    # Allow prefilling the product via GET ?producto=<id>
+    producto_prefill = request.GET.get('producto')
+
+    if request.method == 'GET':
+        if producto_prefill:
+            try:
+                producto_obj = Producto.objects.get(pk=int(producto_prefill))
+            except (Producto.DoesNotExist, ValueError):
+                producto_obj = None
+
+            if producto_obj and producto_obj.stock_producto <= 0:
+                form = ReservaForm(initial={'producto': producto_obj.id})
+            else:
+                # If product has stock, don't prefill and show a warning in template
+                form = ReservaForm()
+                return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'El producto seleccionado tiene stock disponible y no se puede reservar.'})
+
+        else:
+            form = ReservaForm()
+
+        return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form})
+
+    # POST
+    form = ReservaForm(request.POST)
+    if form.is_valid():
+        datos = form.cleaned_data
+        producto = datos['producto']
+        cliente = datos['cliente']
+        cantidad = datos['cantidad']
+        comentario = datos.get('comentario')
+
+        # Enforce business rule: only allow reservation if product has no stock
+        if producto.stock_producto > 0:
+            return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'No se puede reservar un producto que tiene stock disponible.'})
+
+        Reserva.objects.create(
+            producto=producto,
+            cliente=cliente,
+            empleado=request.empleado,
+            cantidad=cantidad,
+            comentario=comentario,
+            estado=Reserva.ESTADO_SOLICITADO
+        )
+
+        return redirect('lista_reservas')
+
+    return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form})
+
+
+@empleado_login_required
+def lista_reservas(request):
+    reservas = Reserva.objects.all().order_by('-fecha_solicitud')
+    return render(request, 'empleado/listaReservas.html', {'reservas': reservas})
+
+
+@empleado_login_required
+def confirmar_reserva(request, reserva_id):
+    # Only allow POST to change state
+    if request.method != 'POST':
+        return redirect('lista_reservas')
+
+    try:
+        reserva = Reserva.objects.get(pk=reserva_id)
+    except Reserva.DoesNotExist:
+        return redirect('lista_reservas')
+
+    # Only an empleado can confirm; optionally check permissions
+    if reserva.estado == Reserva.ESTADO_RESERVADO:
+        return redirect('lista_reservas')
+
+    producto = reserva.producto
+    # Check if sufficient stock (usually reservation created when stock <=0)
+    # If stock is negative or zero, we still allow marking as reserved and decrease stock accordingly
+    # In normal flow, confirming a reservation would allocate stock (subtract)
+    producto.stock_producto = producto.stock_producto - reserva.cantidad
+    producto.save()
+
+    reserva.estado = Reserva.ESTADO_RESERVADO
+    from datetime import date
+    reserva.fecha_reserva = date.today()
+    reserva.save()
+
+    return redirect('lista_reservas')
+
+
+@empleado_login_required
+def cancelar_reserva(request, reserva_id):
+    if request.method != 'POST':
+        return redirect('lista_reservas')
+
+    try:
+        reserva = Reserva.objects.get(pk=reserva_id)
+    except Reserva.DoesNotExist:
+        return redirect('lista_reservas')
+
+    # If already reserved, optionally restore stock
+    if reserva.estado == Reserva.ESTADO_RESERVADO:
+        producto = reserva.producto
+        producto.stock_producto = producto.stock_producto + reserva.cantidad
+        producto.save()
+
+    reserva.estado = Reserva.ESTADO_CANCELADO
+    reserva.save()
+
+    return redirect('lista_reservas')
 
 
 # empleados = Empleado.objects.all()

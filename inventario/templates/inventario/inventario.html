@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+<h2>Inventario</h2>
+<!-- link to productos removed; avoid reverse errors if products app has no namespace -->
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Nombre</th>
+			<th>Precio</th>
+			<th>Stock</th>
+			<th>Fecha Vencimiento</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for p in productos %}
+		<tr>
+			<td>{{ p.nombre_producto }}</td>
+			<td>{{ p.precio_producto }}</td>
+			<td>{{ p.stock_producto }}</td>
+			<td>{% if p.fecha_vencimiento_producto %}{{ p.fecha_vencimiento_producto }}{% else %}-{% endif %}</td>
+		</tr>
+		{% empty %}
+		<tr><td colspan="4">No hay productos.</td></tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<a class="btn btn-secondary" href="{% url 'inventario_reservas' %}">Ver Reservas</a>
+
+{% endblock %}

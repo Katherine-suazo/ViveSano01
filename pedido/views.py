@@ -3,15 +3,18 @@ from django.contrib import messages
 from .models import Pedido, DetallePedido
 from .forms import PedidoForm, DetallePedidoForm
 from producto.models import Producto
+from empleado.decorators import empleado_login_required
 
 
 
+@empleado_login_required
 def lista_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request, 'pedido/listaPedidos.html', {'pedidos': pedidos})
 
 
 
+@empleado_login_required
 def crear_pedido(request):
     if request.method == 'GET':
         formulario_recibido = PedidoForm()
@@ -35,6 +38,7 @@ def crear_pedido(request):
 
 
 
+@empleado_login_required
 def agregar_detalle_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
@@ -68,6 +72,7 @@ def agregar_detalle_pedido(request, pedido_id):
 
 
 
+@empleado_login_required
 def detalle_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id = pedido_id)
     detalles = pedido.detallepedido_set.select_related('producto_detalle')
@@ -75,6 +80,7 @@ def detalle_pedido(request, pedido_id):
 
 
 
+@empleado_login_required
 def cancelar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     detalles = pedido.detallepedido_set.select_related('producto_detalle')
@@ -92,6 +98,7 @@ def cancelar_pedido(request, pedido_id):
 
 
 
+@empleado_login_required
 def eliminar_pedido(request, id):
     pedido = get_object_or_404(Pedido, id = id)
 

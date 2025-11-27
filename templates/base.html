@@ -25,12 +25,21 @@
 
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                {% if request.session.empleado_id %}
+                {% if request.empleado %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Panel</a></li>
                 <li class="nav-item"><a class="nav-link" href="/clientes/listaClientes">Clientes</a></li>
                 <li class="nav-item"><a class="nav-link" href="/productos/listaProductos">Productos</a></li>
                 <li class="nav-item"><a class="nav-link" href="/pedidos/listaPedidos">Pedidos</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Inventario</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="inventarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Inventario</a>
+                    <ul class="dropdown-menu" aria-labelledby="inventarioDropdown">
+                        <li><a class="dropdown-item" href="{% url 'inventario_home' %}">Resumen Inventario</a></li>
+                        <li><a class="dropdown-item" href="{% url 'inventario_reservas' %}">Reservas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'solicitar_reserva' %}">Solicitar Reserva</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
                 {% endif %}
 
@@ -38,7 +47,7 @@
 
             <ul class="navbar-nav">
 
-                {% if request.session.empleado_id %}
+                {% if request.empleado %}
                     <li class="nav-item">
                         <span class="nav-link">Hola, {{ request.empleado.nombre_empleado }}</span>
                     </li>
