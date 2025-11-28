@@ -1,5 +1,6 @@
 from django import forms
 from .models import Producto, CategoriaProducto
+from datetime import date
 
 
 class CategoriaForm(forms.Form):
@@ -13,5 +14,17 @@ class ProductoForm(forms.Form):
     descripcion_producto = forms.CharField(label='Descripcion', required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Descripción del producto'}))
 
     categoria_producto = forms.ModelChoiceField(queryset = CategoriaProducto.objects.all(), empty_label = "Seleccione una categoría", widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today = date.today().isoformat()
+        # set min attribute so browser datepicker can't pick past dates
+        self.fields['fecha_vencimiento_producto'].widget.attrs.update({'min': today})
+
+    def clean_fecha_vencimiento_producto(self):
+        fv = self.cleaned_data.get('fecha_vencimiento_producto')
+        if fv and fv < date.today():
+            raise forms.ValidationError('La fecha de vencimiento no puede ser anterior a hoy.')
+        return fv
 
     
