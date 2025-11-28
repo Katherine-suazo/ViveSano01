@@ -34,7 +34,7 @@
         {% for x in pedidos %}
         <tr>
             <td>{{ x.cliente_pedido }}</td>
-            <td>{{ x.estado_pedido }}</td>
+            <td>{{ x.estado_pedido|cut:"_"|title }}</td>
             <td>{{ x.fecha_creacion_pedido }}</td>
             <td>{{ x.fecha_entrega_pedido }}</td>
             <td>{{ x.productos_resumen }}</td>

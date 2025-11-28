@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib import messages
 from .models import Empleado
 from .forms import EmpleadoForm, EmpleadoFormCompleto
 from .decorators import empleado_login_required
@@ -68,6 +69,9 @@ def home(request):
 def cerrar_sesion(request):
     request.session.pop('empleado_id', None)
     return redirect('ingreso_empleado')
+
+
+# --------------- RESERVA
 
 
 @empleado_login_required
@@ -169,6 +173,21 @@ def cancelar_reserva(request, reserva_id):
     reserva.save()
 
     return redirect('lista_reservas')
+
+
+
+@empleado_login_required
+def eliminar_recerva(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id = reserva_id)
+
+    if reserva.estado == 'CANCELADO':
+        reserva.delete()
+        messages.success(request, 'La Reserva fue eliminada')
+    else:
+        messages.warning(request, 'La Reserva no puede ser eliminada')
+
+    return redirect('lista_reservas')
+
 
 
 # empleados = Empleado.objects.all()

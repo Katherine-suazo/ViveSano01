@@ -24,7 +24,7 @@
             <td>{{ r.id }}</td>
             <td>{{ r.producto.nombre_producto }}</td>
             <td>{{ r.cliente }}</td>
-            <td>{{ r.empleado }}</td>
+            <td>{{ r.empleado|cut:"_"|title }}</td>
             <td>{{ r.cantidad }}</td>
             <td>{{ r.get_estado_display }}</td>
             <td>{{ r.fecha_solicitud }}</td>
@@ -38,10 +38,18 @@
                     {% csrf_token %}
                     <button class="btn btn-sm btn-danger" type="submit">Cancelar</button>
                 </form>
+
                 {% elif r.estado == 'RESERVADO' %}
                 <form method="post" action="{% url 'cancelar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-warning" type="submit">Anular</button>
+                </form>
+                {% endif %}
+
+                {% if r.estado == 'CANCELADO' %}
+                <form method="post" action="{% url 'eliminar_recerva' r.id %}" style="display:inline-block;">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
                 </form>
                 {% endif %}
             </td>

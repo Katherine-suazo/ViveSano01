@@ -64,6 +64,7 @@ class Reserva(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
+    
     cantidad = models.IntegerField(null=False, blank=False, default=1)
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
     fecha_reserva = models.DateField(null=True, blank=True)

@@ -13,4 +13,5 @@ def inventario_home(request):
 @empleado_login_required
 def reservas_inventario(request):
 	reservas = Reserva.objects.all().order_by('-fecha_solicitud')
+	# reservas = Reserva.objects.raw("select id,fecha_solicitud,fecha_reserva,estado from empleado_empleado")
 	return render(request, 'empleado/listaReservas.html', {'reservas': reservas})

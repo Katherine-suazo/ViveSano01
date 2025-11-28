@@ -49,22 +49,27 @@ def agregar_detalle_pedido(request, pedido_id):
             producto = formulario_recibido.cleaned_data['producto_detalle']
             cantidad = formulario_recibido.cleaned_data['cantidad_detalle']
 
-            if producto.stock_producto < cantidad:
-                formulario_recibido.add_error('cantidad_detalle', 'No hay stock suficiente para este producto.')
-            else:
-                DetallePedido.objects.create(
-                    pedido_detalle = pedido,
-                    producto_detalle = producto,
-                    cantidad_detalle = cantidad,
-                    precio_unitario_detalle = producto.precio_producto
-                )
-                producto.stock_producto -= cantidad
-                producto.save()
-
-                pedido.total_pedido += producto.precio_producto * cantidad
-                pedido.save()
-
+            if pedido.estado_pedido == 'CANCELADO':
+                messages.warning(request, 'No se pueden agregar productos, Estado CANCELADO')
                 return redirect('detalle_pedido', pedido_id = pedido.id)
+
+            else:
+                if producto.stock_producto < cantidad:
+                    formulario_recibido.add_error('cantidad_detalle', 'No hay stock suficiente para este producto.')
+                else:
+                    DetallePedido.objects.create(
+                        pedido_detalle = pedido,
+                        producto_detalle = producto,
+                        cantidad_detalle = cantidad,
+                        precio_unitario_detalle = producto.precio_producto
+                    )
+                    producto.stock_producto -= cantidad
+                    producto.save()
+
+                    pedido.total_pedido += producto.precio_producto * cantidad
+                    pedido.save()
+
+                    return redirect('detalle_pedido', pedido_id = pedido.id)
     else:
         formulario_recibido = DetallePedidoForm()
 
