@@ -143,7 +143,6 @@ def confirmar_reserva(request, reserva_id):
 
     producto = reserva.producto
 
-    # Do not allow stock to become negative; clamp to zero
     nueva_cantidad = producto.stock_producto - reserva.cantidad
     producto.stock_producto = nueva_cantidad if nueva_cantidad >= 0 else 0
     producto.save()

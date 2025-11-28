@@ -11,7 +11,3 @@ class ClienteForm(forms.Form):
     alergia_cliente = forms.CharField(label = 'Alergias', required = True, widget = forms.TextInput())
 
 
-
-# 1.- El empleado ingresa al cliente
-# 2.- Si el cliente esta ingresado, podra acceder con su nombre y apellido
-# 3.- El cliente podra reservar productos (HU007)
