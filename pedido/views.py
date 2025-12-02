@@ -24,12 +24,22 @@ def crear_pedido(request):
         formulario_recibido = PedidoForm(request.POST)
 
         if formulario_recibido.is_valid():
-            # datos = formulario_recibido.changed_data
+            datos = formulario_recibido.cleaned_data
+            cliente = datos.get('cliente_pedido')
+            # If no cliente provided, use a default 'Consumidor Final' guest client
+            if not cliente:
+                from cliente.models import Cliente as ClienteModel
+                cliente, _ = ClienteModel.objects.get_or_create(
+                    nombre_cliente='Consumidor',
+                    apellido_cliente='Final',
+                    defaults={'direccion_cliente': '', 'telefono_cliente': '', 'alergia_cliente': ''}
+                )
+
             Pedido.objects.create(
-                cliente_pedido = formulario_recibido.cleaned_data['cliente_pedido'],
-                estado_pedido = formulario_recibido.cleaned_data['estado_pedido'],
-                fecha_entrega_pedido = formulario_recibido.cleaned_data['fecha_entrega_pedido'],
-                empleado_pedido = formulario_recibido.cleaned_data['empleado_pedido'],
+                cliente_pedido = cliente,
+                estado_pedido = datos['estado_pedido'],
+                fecha_entrega_pedido = datos['fecha_entrega_pedido'],
+                empleado_pedido = datos['empleado_pedido'],
             )
             print("Pedido Realizado")
             return redirect('lista_pedidos')
@@ -84,6 +94,19 @@ def detalle_pedido(request, pedido_id):
     return render(request, 'pedido/detallePedido.html', {'pedido': pedido, 'detalles': detalles})
 
 
+@empleado_login_required
+def actualizar_estado_pedido(request, pedido_id):
+    if request.method != 'POST':
+        return redirect('detalle_pedido', pedido_id=pedido_id)
+
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    nuevo_estado = request.POST.get('estado')
+    if nuevo_estado:
+        pedido.estado_pedido = nuevo_estado
+        pedido.save()
+    return redirect('detalle_pedido', pedido_id=pedido.id)
+
+
 
 @empleado_login_required
 def cancelar_pedido(request, pedido_id):
@@ -106,11 +129,11 @@ def cancelar_pedido(request, pedido_id):
 @empleado_login_required
 def eliminar_pedido(request, id):
     pedido = get_object_or_404(Pedido, id = id)
-
-    if pedido.estado_pedido == 'CANCELADO':
+    detalles = pedido.detallepedido_set.all()
+    if detalles.exists() and pedido.estado_pedido != 'CANCELADO':
+        messages.warning(request, 'No se puede eliminar el pedido: tiene productos asociados. Cancelelo primero o elimine los detalles.')
+    else:
         pedido.delete()
         messages.success(request, 'El pedido fue eliminado')
-    else:
-        messages.warning(request, 'El pedido no puede ser eliminado')
 
     return redirect('lista_pedidos')

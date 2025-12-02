@@ -9,23 +9,26 @@ from empleado.decorators import empleado_login_required
 @empleado_login_required
 def registro_clientes(request):
     context = {}
-
     if request.method == 'GET':
-        context['formulario_registro'] = ClienteForm
+        context['formulario_registro'] = ClienteForm()
         return render(request, 'cliente/registroCliente.html', context)
-    
+
     if request.method == 'POST':
         formulario_recibido = ClienteForm(request.POST)
-        datos = formulario_recibido.data
-        Cliente.objects.create(
-            nombre_cliente = datos['nombre_cliente'],
-            apellido_cliente = datos['apellido_cliente'],
-            direccion_cliente = datos['direccion_cliente'],
-            telefono_cliente = datos['telefono_cliente'],
-            alergia_cliente = datos['alergia_cliente'],
-        )
-        print('Cliente registrado')
-        return redirect('lista_clientes')
+        if formulario_recibido.is_valid():
+            datos = formulario_recibido.cleaned_data
+            Cliente.objects.create(
+                nombre_cliente = datos['nombre_cliente'],
+                apellido_cliente = datos['apellido_cliente'],
+                direccion_cliente = datos['direccion_cliente'],
+                telefono_cliente = datos['telefono_cliente'],
+                alergia_cliente = datos['alergia_cliente'],
+            )
+            print('Cliente registrado')
+            return redirect('lista_clientes')
+
+        # if invalid, render template with errors
+        return render(request, 'cliente/registroCliente.html', {'formulario_registro': formulario_recibido})
     
 
 @empleado_login_required
