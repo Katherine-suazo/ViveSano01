@@ -178,7 +178,7 @@ def cancelar_reserva(request, reserva_id):
 
 
 @empleado_login_required
-def eliminar_recerva(request, reserva_id):
+def eliminar_reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva, id = reserva_id)
 
     if reserva.estado == 'CANCELADO':

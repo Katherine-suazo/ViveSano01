@@ -110,9 +110,8 @@ def editar_producto(request, id):
             producto.nombre_producto = datos['nombre_producto']
             producto.precio_producto = datos['precio_producto']
             producto.stock_producto = datos['stock_producto']
-            # preserve existing fecha_vencimiento if none provided in form
             fv = datos.get('fecha_vencimiento_producto')
-            if fv:
+            if fv is not None:
                 producto.fecha_vencimiento_producto = fv
             producto.descripcion_producto = datos['descripcion_producto']
             producto.categoria_producto = datos['categoria_producto']
