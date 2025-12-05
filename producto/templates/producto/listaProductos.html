@@ -53,7 +53,6 @@
     <thead>
         <tr>
             <th>Nombre</th>
-            <th>Precio</th>
             <th>Categoria</th>
             <th>Stock</th>
             <th>Fecha Vencimiento</th>
@@ -64,7 +63,6 @@
         {% for p in productos %}
         <tr>
             <td>{{ p.nombre_producto }}</td>
-            <td>{{ p.precio_producto }}</td>
             <td>{{ p.categoria_producto }}</td>
             <td>{{ p.stock_producto }}</td>
             <td>{% if p.fecha_vencimiento_producto %}{{ p.fecha_vencimiento_producto }}{% else %}-{% endif %}</td>

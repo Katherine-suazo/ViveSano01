@@ -42,12 +42,8 @@
             <td>{{ x.empleado_pedido }}</td>
             <td>
                 <a class="btn btn-secondary btn-sm" href="{% url 'editar_pedido' x.id %}">Editar</a>
-            </td>
-            <td>
-                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_pedido' x.id %}">Eliminar</a>
-            </td>
-            <td>
-                <a class="btn btn-sm btn-primary" href="{% url 'detalle_pedido' x.id %}">Detalles</a>
+                <a class="btn btn-sm btn-danger ms-1" href="{% url 'eliminar_pedido' x.id %}">Eliminar</a>
+                <a class="btn btn-sm btn-primary ms-1" href="{% url 'detalle_pedido' x.id %}">Detalles</a>
             </td>
         </tr>
         {% empty %}

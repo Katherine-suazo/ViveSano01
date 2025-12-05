@@ -19,7 +19,7 @@
 		{% for p in productos %}
 		<tr>
 			<td>{{ p.nombre_producto }}</td>
-			<td>{{ p.precio_producto }}</td>
+			{# Precio removed from product model/UI per requirements #}
 			<td>{{ p.stock_producto }}</td>
 			<td>{% if p.fecha_vencimiento_producto %}{{ p.fecha_vencimiento_producto }}{% else %}-{% endif %}</td>
 		</tr>

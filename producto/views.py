@@ -37,33 +37,53 @@ def ingresar_producto(request):
     context = {}
 
     if request.method == 'GET':
+        # Require at least one category before allowing product creation
+        categorias = CategoriaProducto.objects.all()
+        if not categorias.exists():
+            messages.warning(request, 'Debe crear al menos una categoría antes de ingresar productos.')
+            return redirect('ingresar_categoria')
+
         context['formulario_registro'] = ProductoForm()
         return render(request, 'producto/ingresarProducto.html', context)
     
     if request.method == 'POST':
         formulario_recibido = ProductoForm(request.POST)
 
-        if formulario_recibido.is_valid():
-            datos = formulario_recibido.cleaned_data
-            nombre_pro = datos['nombre_producto']
+        try:
+            if formulario_recibido.is_valid():
+                datos = formulario_recibido.cleaned_data
+                nombre_pro = datos['nombre_producto']
 
-            if Producto.objects.filter(nombre_producto__iexact = nombre_pro).exists():
-                return render(request,'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido, 'error': 'El producto ya existe'})
+                if Producto.objects.filter(nombre_producto__iexact=nombre_pro).exists():
+                    messages.error(request, 'El producto ya existe')
+                    return render(request, 'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
 
-            # categoria = CategoriaProducto.objects.get(pk=datos['categoria_producto'])
-            categoria = datos['categoria_producto']
-            Producto.objects.create(
-                nombre_producto = datos['nombre_producto'],
-                precio_producto = datos['precio_producto'],
-                stock_producto = datos['stock_producto'],
-                fecha_vencimiento_producto = datos['fecha_vencimiento_producto'],
-                descripcion_producto = datos['descripcion_producto'],
-                categoria_producto = categoria,
-            )
-        print("Producto registrado")
-        return redirect('lista_productos')
-    
-    return render(request,'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
+                categoria = datos['categoria_producto']
+
+                Producto.objects.create(
+                    nombre_producto=datos['nombre_producto'],
+                    stock_producto=datos['stock_producto'],
+                    fecha_vencimiento_producto=datos['fecha_vencimiento_producto'],
+                    descripcion_producto=datos['descripcion_producto'],
+                    categoria_producto=categoria,
+                )
+                messages.success(request, 'Producto registrado')
+                print("Producto registrado")
+                return redirect('lista_productos')
+
+            # If form invalid, show errors to user
+            else:
+                errors = []
+                for f, err in formulario_recibido.errors.items():
+                    errors.append(f"{f}: {', '.join(err)}")
+                messages.error(request, 'Error al crear producto: ' + ' | '.join(errors))
+                return render(request, 'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
+
+        except Exception as e:
+            messages.error(request, f'Error interno al crear producto: {e}')
+            return render(request, 'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
+
+    return render(request, 'producto/ingresarProducto.html', {'formulario_registro': formulario_recibido})
     
 
 
@@ -108,7 +128,6 @@ def editar_producto(request, id):
             datos = formulario_recibido.cleaned_data
 
             producto.nombre_producto = datos['nombre_producto']
-            producto.precio_producto = datos['precio_producto']
             producto.stock_producto = datos['stock_producto']
             fv = datos.get('fecha_vencimiento_producto')
             if fv is not None:
@@ -122,7 +141,6 @@ def editar_producto(request, id):
     else:
         formulario_recibido = ProductoForm(initial = {
             'nombre_producto': producto.nombre_producto,
-            'precio_producto': producto.precio_producto,
             'stock_producto': producto.stock_producto,
             'fecha_vencimiento_producto': producto.fecha_vencimiento_producto,
             'descripcion_producto': producto.descripcion_producto,
