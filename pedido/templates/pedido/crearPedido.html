@@ -10,12 +10,24 @@
 <form method="post">
         {% csrf_token %}
 
-        {# Render form but hide the cliente field for creating pedidos (sales don't require cliente) #}
+        {# Show cliente selection (required) and the rest of the fields #}
+        <div class="mb-3">{{ formulario_ingreso.cliente_pedido.label_tag }} {{ formulario_ingreso.cliente_pedido }}
+            {% if formulario_ingreso.cliente_pedido.errors %}<div class="text-danger small">{{ formulario_ingreso.cliente_pedido.errors }}</div>{% endif %}
+        </div>
+
         {% for field in formulario_ingreso %}
-                {% if field.name != 'cliente_pedido' %}
-                        <div class="mb-3">{{ field.label_tag }} {{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}</div>
-                {% endif %}
+            {% if field.name != 'cliente_pedido' %}
+                <div class="mb-3">{{ field.label_tag }} {{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}</div>
+            {% endif %}
         {% endfor %}
+
+        <h4>Agregar primer producto</h4>
+        <div class="mb-3">{{ detalle_form.producto_detalle.label_tag }} {{ detalle_form.producto_detalle }}{% if detalle_form.producto_detalle.errors %}<div class="text-danger small">{{ detalle_form.producto_detalle.errors }}</div>{% endif %}</div>
+        <div class="mb-3">{{ detalle_form.cantidad_detalle.label_tag }} {{ detalle_form.cantidad_detalle }}{% if detalle_form.cantidad_detalle.errors %}<div class="text-danger small">{{ detalle_form.cantidad_detalle.errors }}</div>{% endif %}</div>
+
+        {% if not has_clients %}
+            <div class="alert alert-warning">No existen clientes. <a href="{% url 'registro_clientes' %}">Crear cliente</a> antes de generar pedidos.</div>
+        {% endif %}
 
         <button class="btn btn-primary" type="submit">Guardar</button>
         <a class="btn btn-secondary ms-2" href="/pedidos/listaPedidos">Cancelar</a>

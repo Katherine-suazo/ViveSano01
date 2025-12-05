@@ -64,16 +64,19 @@ class ClienteForm(forms.Form):
         if not (7 <= len(normalized) <= 10):
             raise forms.ValidationError('El RUT/ID debe tener entre 7 y 10 caracteres (sin puntos ni guiones).')
 
-        # If it looks like a Chilean RUT, validate DV
-        try:
-            if self._rut_valid(normalized):
-                return normalized
-        except Exception:
-            pass
+        # Only digits allowed in the body; only possible letter allowed is 'K' at the end
+        body = normalized[:-1]
+        dv = normalized[-1]
 
-        # If rut_valid returned False, still allow if basic alphanumeric check passes
-        if not normalized.isalnum():
-            raise forms.ValidationError('El RUT/ID contiene caracteres inválidos.')
+        if not body.isdigit():
+            raise forms.ValidationError('El RUT/ID debe contener solo dígitos en el cuerpo antes del dígito verificador.')
+
+        if not (dv.isdigit() or dv == 'K'):
+            raise forms.ValidationError("El dígito verificador sólo puede ser un número o la letra 'K'.")
+
+        # Enforce check-digit validity
+        if not self._rut_valid(normalized):
+            raise forms.ValidationError('El RUT/ID no es válido (DV incorrecto).')
 
         return normalized
 
@@ -101,9 +104,8 @@ class ClienteForm(forms.Form):
 
     def clean_alergia_cliente(self):
         alergia = self.cleaned_data['alergia_cliente']
-
-        # opcional: evita caracteres raros
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ,.-]+$', alergia):
-            raise forms.ValidationError("La alergia contiene caracteres inválidos.")
+        # No se permiten números en alergias; solo letras, espacios y signos de puntuación básicos
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ ,.-]+$', alergia):
+            raise forms.ValidationError("La alergia no puede contener números ni caracteres inválidos.")
 
         return alergia

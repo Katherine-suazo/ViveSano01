@@ -68,7 +68,7 @@ class Reserva(models.Model):
     
     cantidad = models.IntegerField(null=False, blank=False, default=1)
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
-    fecha_reserva = models.DateField(null=True, blank=True)
+    fecha_entrega = models.DateField(null=True, blank=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default=ESTADO_SOLICITADO)
     comentario = models.TextField(null=True, blank=True)
 

@@ -11,11 +11,11 @@
         <tr>
             <th>ID</th>
             <th>Producto</th>
-            <th>Cliente</th>
             <th>Empleado</th>
             <th>Cantidad</th>
             <th>Estado</th>
             <th>Fecha Solicitud</th>
+            <th>Fecha Entrega</th>
         </tr>
     </thead>
     <tbody>
@@ -23,19 +23,19 @@
         <tr>
             <td>{{ r.id }}</td>
             <td>{{ r.producto.nombre_producto }}</td>
-            <td>{% if r.cliente %}{{ r.cliente }}{% else %}(sin cliente){% endif %}</td>
             <td>{{ r.empleado|cut:"_"|title }}</td>
             <td>{{ r.cantidad }}</td>
             <td>{{ r.get_estado_display }}</td>
             <td>{{ r.fecha_solicitud }}</td>
+            <td>{% if r.fecha_entrega %}{{ r.fecha_entrega }}{% else %}-{% endif %}</td>
             <td>
                 {% if r.estado == 'SOLICITADO' %}
                 <form method="post" action="{% url 'confirmar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-success" type="submit">Confirmar</button>
                 </form>
-                <!-- Instead of direct cancel, provide option to create a Pedido from this Reserva -->
-                <a class="btn btn-sm btn-primary ms-1" href="{% url 'crear_pedido' %}?reserva={{ r.id }}">Crear Pedido</a>
+                <!-- Provide option to edit the reservation (edit or cancel) -->
+                <a class="btn btn-sm btn-primary ms-1" href="{% url 'editar_reserva' r.id %}">Editar Reserva</a>
                 {% elif r.estado == 'RESERVADO' %}
                 <form method="post" action="{% url 'cancelar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
