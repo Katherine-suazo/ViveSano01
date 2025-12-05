@@ -3,6 +3,7 @@ from .models import Cliente
 import re
 
 class ClienteForm(forms.Form):
+    customer_id_number = forms.CharField(label='RUT / ID', required=True, max_length=10, widget=forms.TextInput(attrs={'placeholder': '19.876.543-K'}))
     nombre_cliente = forms.CharField(label='Nombre', required=True, widget=forms.TextInput())
     apellido_cliente = forms.CharField(label='Apellido', required=True, widget=forms.TextInput())
     direccion_cliente = forms.CharField(label='Direccion',required=True,widget=forms.TextInput())
@@ -20,6 +21,61 @@ class ClienteForm(forms.Form):
             raise forms.ValidationError("El nombre es demasiado corto.")
         
         return nombre
+
+
+    def _normalize_id(self, value: str) -> str:
+        # remove dots, hyphens and spaces, uppercase
+        return ''.join(ch for ch in value if ch.isalnum()).upper()
+
+
+    def _rut_valid(self, rut: str) -> bool:
+        # Basic Chilean RUT validation: expects numeric body + verifier (0-9 or K)
+        # rut passed normalized (no dots or hyphens), e.g. '19876543K'
+        if len(rut) < 2:
+            return False
+        body = rut[:-1]
+        dv = rut[-1].upper()
+        if not body.isdigit():
+            return False
+
+        reversed_digits = map(int, reversed(body))
+        factors = [2,3,4,5,6,7]
+        s = 0
+        factor_index = 0
+        for d in reversed_digits:
+            s += d * factors[factor_index]
+            factor_index = (factor_index + 1) % len(factors)
+
+        mod = 11 - (s % 11)
+        if mod == 11:
+            dv_calc = '0'
+        elif mod == 10:
+            dv_calc = 'K'
+        else:
+            dv_calc = str(mod)
+
+        return dv == dv_calc
+
+
+    def clean_customer_id_number(self):
+        raw = self.cleaned_data.get('customer_id_number', '')
+        normalized = self._normalize_id(raw)
+
+        if not (7 <= len(normalized) <= 10):
+            raise forms.ValidationError('El RUT/ID debe tener entre 7 y 10 caracteres (sin puntos ni guiones).')
+
+        # If it looks like a Chilean RUT, validate DV
+        try:
+            if self._rut_valid(normalized):
+                return normalized
+        except Exception:
+            pass
+
+        # If rut_valid returned False, still allow if basic alphanumeric check passes
+        if not normalized.isalnum():
+            raise forms.ValidationError('El RUT/ID contiene caracteres inválidos.')
+
+        return normalized
 
 
     def clean_apellido_cliente(self):

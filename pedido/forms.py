@@ -17,7 +17,7 @@ class PedidoForm(forms.Form):
     cliente_pedido = forms.ModelChoiceField(
         label='Cliente',
         queryset=Cliente.objects.all(),
-        required=False,
+        required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     estado_pedido = forms.ChoiceField(label='Estado',required=True,choices=ESTADO_CHOICES,widget=forms.Select(attrs={'class': 'form-control'}))
@@ -82,12 +82,6 @@ class DetallePedidoForm(forms.Form):
 
 
 class ReservaForm(forms.Form):
-    cliente = forms.ModelChoiceField(
-        label='Cliente',
-        queryset=Cliente.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-
     producto = forms.ModelChoiceField(
         label='Producto',
         queryset=Producto.objects.all(),
@@ -97,6 +91,7 @@ class ReservaForm(forms.Form):
     cantidad = forms.IntegerField(
         label='Cantidad',
         min_value=1,
+        max_value=500,
         initial=1,
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
@@ -109,8 +104,10 @@ class ReservaForm(forms.Form):
 
     def clean_cantidad(self):
         cant = self.cleaned_data.get("cantidad")
-        if cant > 1000:
-            raise forms.ValidationError("Cantidad demasiado grande.")
+        if cant is None:
+            return cant
+        if cant > 500:
+            raise forms.ValidationError("Cantidad máxima permitida para una reserva es 500.")
         return cant
 
     def clean_comentario(self):
@@ -124,12 +121,8 @@ class ReservaForm(forms.Form):
         producto = cleaned.get("producto")
         cantidad = cleaned.get("cantidad")
 
-        if producto and cantidad:
-            if hasattr(producto, "stock_producto"):
-                if cantidad > producto.stock_producto:
-                    raise forms.ValidationError(
-                        f"Stock insuficiente para reservar. Disponible: {producto.stock_producto}"
-                    )
+        # Reservations are allowed regardless of current stock (used to request restock).
+        # The only constraint is the max quantity (validated above).
         return cleaned
 
 
