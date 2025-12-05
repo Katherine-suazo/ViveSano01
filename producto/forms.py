@@ -12,9 +12,15 @@ class ProductoForm(forms.Form):
     nombre_producto = forms.CharField(label='Nombre',required=True,widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Nombre del producto'}))
     precio_producto = forms.DecimalField(label='Precio',required=True,min_value=0.01,max_value=7, widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '0.00','step': '0.01'}))
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     stock_producto = forms.IntegerField(label='Stock',min_value=0,max_value=500,required=True,widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '0','min': '0'}))
     fecha_vencimiento_producto = forms.DateField(label='Fecha de vencimiento',required=False, widget=forms.DateInput(attrs={'class': 'form-control','type': 'date'}))
     descripcion_producto = forms.CharField(label='Descripción',required=True,widget=forms.Textarea(attrs={'class': 'form-control','rows': 4,'placeholder': 'Descripción del producto'}))
+=======
+    stock_producto = forms.IntegerField(label='Stock',min_value=0,max_value=500, required=True, widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '0','min': '0'}))
+    fecha_vencimiento_producto = forms.DateField(label='Fecha de vencimiento', required=False, widget=forms.DateInput(attrs={'class': 'form-control','type': 'date'}))
+    descripcion_producto = forms.CharField(label='Descripción',required=True, widget=forms.Textarea(attrs={'class': 'form-control','rows': 4,'placeholder': 'Descripción del producto'}))
+>>>>>>> Stashed changes
 =======
     stock_producto = forms.IntegerField(label='Stock',min_value=0,max_value=500, required=True, widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '0','min': '0'}))
     fecha_vencimiento_producto = forms.DateField(label='Fecha de vencimiento', required=False, widget=forms.DateInput(attrs={'class': 'form-control','type': 'date'}))
