@@ -11,10 +11,15 @@ class PedidoForm(forms.Form):
         ('PENDIENTE', 'Pendiente'),
         ('EN_PROCESO', 'En proceso'),
         ('ENTREGADO', 'Entregado'),
-        ('CANCELADO', 'Cancelado'),
     ]
 
-    cliente_pedido = forms.ModelChoiceField(label='Cliente',queryset=Cliente.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}))
+    # Make cliente optional for creating pedidos (sales can be made without a registered cliente)
+    cliente_pedido = forms.ModelChoiceField(
+        label='Cliente',
+        queryset=Cliente.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     estado_pedido = forms.ChoiceField(label='Estado',required=True,choices=ESTADO_CHOICES,widget=forms.Select(attrs={'class': 'form-control'}))
     fecha_entrega_pedido = forms.DateField(label='Fecha entrega',required=True,widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
     empleado_pedido = forms.ModelChoiceField(label='Registrado por',queryset=Empleado.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}))

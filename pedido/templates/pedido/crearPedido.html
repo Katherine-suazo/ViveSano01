@@ -8,13 +8,24 @@
 
 <h2>Crear Pedido</h2>
 <form method="post">
-    {% csrf_token %}
-    {{ formulario_ingreso }}
-    <button class="btn btn-primary" type="submit">Guardar</button>
-</form>
-<p>{{ error }}</p>
+        {% csrf_token %}
 
-<a class="btn btn-secondary" href="/pedidos/listaPedidos">Cancelar</a>
+        {# Render form but hide the cliente field for creating pedidos (sales don't require cliente) #}
+        {% for field in formulario_ingreso %}
+                {% if field.name != 'cliente_pedido' %}
+                        <div class="mb-3">{{ field.label_tag }} {{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}</div>
+                {% endif %}
+        {% endfor %}
+
+        <button class="btn btn-primary" type="submit">Guardar</button>
+        <a class="btn btn-secondary ms-2" href="/pedidos/listaPedidos">Cancelar</a>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="mt-2">{{ m }}</div>
+            {% endfor %}
+        {% endif %}
+</form>
 
 
 {% endblock %}

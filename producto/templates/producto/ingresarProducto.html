@@ -7,6 +7,7 @@
 <h2>Registrar Producto</h2>
 <form method="post">
     {% csrf_token %}
+    {# The price field is hidden by design; other fields will render visibly #}
     {{ formulario_registro.as_p }}
     <button class="btn btn-primary" type="submit">Guardar</button>
 </form>

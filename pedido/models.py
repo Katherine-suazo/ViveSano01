@@ -34,7 +34,8 @@ class Pedido(models.Model):
 
 class DetallePedido(models.Model):
     cantidad_detalle = models.IntegerField(null = False, blank = False)
-    precio_unitario_detalle = models.DecimalField(max_digits=10, decimal_places=2, null = False, blank = False)
+    # Price is optional in this system; store if available but allow null and default to 0
+    precio_unitario_detalle = models.DecimalField(max_digits=10, decimal_places=2, null = True, blank = True, default=0)
     pedido_detalle = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     producto_detalle = models.ForeignKey(Producto, on_delete=models.CASCADE)
     
