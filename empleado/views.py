@@ -4,9 +4,11 @@ from django.contrib import messages
 from .models import Empleado
 from .forms import EmpleadoForm, EmpleadoFormCompleto
 from .decorators import empleado_login_required
-from pedido.forms import ReservaForm
+from pedido.forms import ReservaForm, ReservaEditForm
 from pedido.models import Reserva
 from producto.models import Producto
+from pedido.forms import ReservaEditForm
+from datetime import date
 # cliente import removed: reservations no longer require a Cliente
 
 
@@ -124,6 +126,32 @@ def lista_reservas(request):
     reservas = Reserva.objects.all().order_by('-fecha_solicitud')
     return render(request, 'empleado/listaReservas.html', {'reservas': reservas})
 
+@empleado_login_required
+def editar_reserva(request, reserva_id):
+    reserva = get_object_or_404(Reserva, pk=reserva_id)
+
+    if request.method == 'POST':
+        form = ReservaEditForm(request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            reserva.cantidad = datos['cantidad']
+            reserva.comentario = datos.get('comentario')
+            reserva.fecha_entrega = datos.get('fecha_entrega')
+            reserva.save()
+            messages.success(request, 'Reserva actualizada.')
+            return redirect('lista_reservas')
+    else:
+        form = ReservaEditForm(initial={
+            'cantidad': reserva.cantidad,
+            'fecha_entrega': reserva.fecha_entrega,
+            'comentario': reserva.comentario,
+        })
+
+    return render(request, 'empleado/editarReserva.html', {
+        'formulario_recibido': form,
+        'reserva': reserva,
+    })
+
 
 @empleado_login_required
 def confirmar_reserva(request, reserva_id):
@@ -146,7 +174,7 @@ def confirmar_reserva(request, reserva_id):
 
     reserva.estado = Reserva.ESTADO_RESERVADO
     from datetime import date
-    reserva.fecha_reserva = date.today()
+    reserva.fecha_entrega = date.today()
     reserva.save()
 
     return redirect('lista_reservas')

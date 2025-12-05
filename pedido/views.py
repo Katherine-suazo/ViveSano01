@@ -33,22 +33,33 @@ def lista_pedidos(request):
 @empleado_login_required
 @require_categoria
 def crear_pedido(request):
-    # GET: show create form (cliente selection intentionally optional and hidden in template)
+    # GET: show create form (cliente selection required) and small detalle form to add the first product
     if request.method == 'GET':
         formulario_recibido = PedidoForm()
+        detalle_form = DetallePedidoForm()
+        has_clients = ClienteModel.objects.exists()
         return render(request, 'pedido/crearPedido.html', {
-            'formulario_ingreso': formulario_recibido
+            'formulario_ingreso': formulario_recibido,
+            'detalle_form': detalle_form,
+            'has_clients': has_clients,
         })
 
-    # POST: create the pedido. We don't require the cliente; use Consumidor Final when none provided.
+    # POST: handle creating pedido and its first detalle in one request
     if request.method == 'POST':
         formulario_recibido = PedidoForm(request.POST)
+        detalle_form = DetallePedidoForm(request.POST)
 
-        if formulario_recibido.is_valid():
+        has_clients = ClienteModel.objects.exists()
+
+        if not has_clients:
+            messages.warning(request, 'Debe crear al menos un cliente antes de generar pedidos.')
+            return redirect('registro_clientes')
+
+        if formulario_recibido.is_valid() and detalle_form.is_valid():
             datos = formulario_recibido.cleaned_data
-
-            # Require an existing cliente (form validation enforces this).
             cliente = datos.get('cliente_pedido')
+
+            # create pedido
             pedido = Pedido.objects.create(
                 cliente_pedido=cliente,
                 estado_pedido=datos['estado_pedido'],
@@ -56,12 +67,45 @@ def crear_pedido(request):
                 empleado_pedido=datos['empleado_pedido'],
             )
 
-            # Do not finalize creation view to list; require adding at least one product
-            messages.info(request, 'Pedido creado. Ahora debe agregar al menos un producto para finalizar el pedido.')
-            return redirect('agregar_detalle_pedido', pedido_id=pedido.id)
+            # create detalle and update stock/total
+            producto = detalle_form.cleaned_data['producto_detalle']
+            cantidad = detalle_form.cleaned_data['cantidad_detalle']
 
+            # validate stock
+            if producto.stock_producto < cantidad:
+                messages.error(request, f'Stock insuficiente para el producto "{producto.nombre_producto}". Disponible: {producto.stock_producto}.')
+                # remove created pedido to avoid orphan
+                pedido.delete()
+                return render(request, 'pedido/crearPedido.html', {
+                    'formulario_ingreso': formulario_recibido,
+                    'detalle_form': detalle_form,
+                    'has_clients': has_clients,
+                })
+
+            from decimal import Decimal
+            precio_unitario = getattr(producto, 'precio_producto', None) or Decimal('0.00')
+
+            DetallePedido.objects.create(
+                pedido_detalle=pedido,
+                producto_detalle=producto,
+                cantidad_detalle=cantidad,
+                precio_unitario_detalle=precio_unitario
+            )
+
+            producto.stock_producto -= cantidad
+            producto.save()
+
+            pedido.total_pedido += precio_unitario * cantidad
+            pedido.save()
+
+            messages.success(request, 'Pedido creado con su primer producto.')
+            return redirect('detalle_pedido', pedido_id=pedido.id)
+
+        # If either form invalid, show errors
         return render(request, 'pedido/crearPedido.html', {
-            'formulario_ingreso': formulario_recibido
+            'formulario_ingreso': formulario_recibido,
+            'detalle_form': detalle_form,
+            'has_clients': has_clients,
         })
 
 

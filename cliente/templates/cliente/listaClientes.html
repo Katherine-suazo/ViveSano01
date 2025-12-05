@@ -37,7 +37,7 @@
         <tr>
             <td>{{ x.nombre_cliente }}</td>
             <td>{{ x.apellido_cliente }}</td>
-            <td>{{ x.customer_id_number }}</td>
+            <td>{% load rut_extras %}{{ x.customer_id_number|format_rut }}</td>
             <td>{{ x.direccion_cliente }}</td>
             <td>{{ x.telefono_cliente }}</td>
             <td>{{ x.alergia_cliente }}</td>

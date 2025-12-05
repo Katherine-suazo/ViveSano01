@@ -126,3 +126,26 @@ class ReservaForm(forms.Form):
         return cleaned
 
 
+class ReservaEditForm(forms.Form):
+    cantidad = forms.IntegerField(label='Cantidad', min_value=1, max_value=500, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    fecha_entrega = forms.DateField(label='Fecha entrega', required=False, widget=forms.DateInput(attrs={'class': 'form-control','type':'date'}))
+    comentario = forms.CharField(label='Comentario', required=False, widget=forms.Textarea(attrs={'class':'form-control','rows':3}))
+
+    def clean_cantidad(self):
+        cant = self.cleaned_data.get('cantidad')
+        if cant is None:
+            return cant
+        if cant > 500:
+            raise forms.ValidationError('Cantidad máxima permitida para una reserva es 500.')
+        return cant
+
+    def clean(self):
+        cleaned = super().clean()
+        # fecha_entrega validation: not in past
+        fecha = cleaned.get('fecha_entrega')
+        from datetime import date
+        if fecha and fecha < date.today():
+            raise forms.ValidationError('La fecha de reserva no puede ser anterior a hoy.')
+        return cleaned
+
+
