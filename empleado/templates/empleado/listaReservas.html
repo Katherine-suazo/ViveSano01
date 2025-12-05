@@ -23,7 +23,7 @@
         <tr>
             <td>{{ r.id }}</td>
             <td>{{ r.producto.nombre_producto }}</td>
-            <td>{{ r.cliente }}</td>
+            <td>{% if r.cliente %}{{ r.cliente }}{% else %}(sin cliente){% endif %}</td>
             <td>{{ r.empleado|cut:"_"|title }}</td>
             <td>{{ r.cantidad }}</td>
             <td>{{ r.get_estado_display }}</td>
@@ -34,11 +34,8 @@
                     {% csrf_token %}
                     <button class="btn btn-sm btn-success" type="submit">Confirmar</button>
                 </form>
-                <form method="post" action="{% url 'cancelar_reserva' r.id %}" style="display:inline-block; margin-left:6px;">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-danger" type="submit">Cancelar</button>
-                </form>
-
+                <!-- Instead of direct cancel, provide option to create a Pedido from this Reserva -->
+                <a class="btn btn-sm btn-primary ms-1" href="{% url 'crear_pedido' %}?reserva={{ r.id }}">Crear Pedido</a>
                 {% elif r.estado == 'RESERVADO' %}
                 <form method="post" action="{% url 'cancelar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
@@ -47,7 +44,7 @@
                 {% endif %}
 
                 {% if r.estado == 'CANCELADO' %}
-                <form method="post" action="{% url 'eliminar_recerva' r.id %}" style="display:inline-block;">
+                <form method="post" action="{% url 'eliminar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
                 </form>

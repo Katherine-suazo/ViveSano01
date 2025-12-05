@@ -47,19 +47,8 @@ def crear_pedido(request):
         if formulario_recibido.is_valid():
             datos = formulario_recibido.cleaned_data
 
-            # Always prefer an explicit cliente if provided; otherwise use/create Consumidor Final
+            # Require an existing cliente (form validation enforces this).
             cliente = datos.get('cliente_pedido')
-            if not cliente:
-                cliente, _ = ClienteModel.objects.get_or_create(
-                    nombre_cliente='Consumidor',
-                    apellido_cliente='Final',
-                    defaults={
-                        'direccion_cliente': '',
-                        'telefono_cliente': '+56900000000',
-                        'alergia_cliente': ''
-                    }
-                )
-
             pedido = Pedido.objects.create(
                 cliente_pedido=cliente,
                 estado_pedido=datos['estado_pedido'],

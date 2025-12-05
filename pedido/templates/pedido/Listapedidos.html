@@ -25,7 +25,6 @@
             <th>Fecha pedido</th>
             <th>Fecha entrega</th>
             <th>Productos</th>
-            <th>Total</th>
             <th>Registrado por</th>
             <th>Acciones</th>
         </tr>
@@ -38,7 +37,6 @@
             <td>{{ x.fecha_creacion_pedido }}</td>
             <td>{{ x.fecha_entrega_pedido }}</td>
             <td>{{ x.productos_resumen }}</td>
-            <td>{{ x.total_pedido }}</td>
             <td>{{ x.empleado_pedido }}</td>
             <td>
                 <a class="btn btn-secondary btn-sm" href="{% url 'editar_pedido' x.id %}">Editar</a>

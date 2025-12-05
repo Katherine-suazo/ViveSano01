@@ -7,7 +7,7 @@ from .decorators import empleado_login_required
 from pedido.forms import ReservaForm
 from pedido.models import Reserva
 from producto.models import Producto
-from cliente.models import Cliente
+# cliente import removed: reservations no longer require a Cliente
 
 
 def ingreso_empleado(request):
@@ -84,12 +84,11 @@ def solicitar_reserva(request):
                 producto_obj = Producto.objects.get(pk=int(producto_prefill))
             except (Producto.DoesNotExist, ValueError):
                 producto_obj = None
-
-            if producto_obj and producto_obj.stock_producto <= 0:
+            # Prefill the product selection if provided; allow reservation even if stock > 0
+            if producto_obj:
                 form = ReservaForm(initial={'producto': producto_obj.id})
             else:
                 form = ReservaForm()
-                return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'El producto seleccionado tiene stock disponible y no se puede reservar.'})
 
         else:
             form = ReservaForm()
@@ -101,16 +100,14 @@ def solicitar_reserva(request):
     if form.is_valid():
         datos = form.cleaned_data
         producto = datos['producto']
-        cliente = datos['cliente']
         cantidad = datos['cantidad']
         comentario = datos.get('comentario')
 
-        if producto.stock_producto > 0:
-            return render(request, 'empleado/solicitarReserva.html', {'formulario_registro': form, 'error': 'No se puede reservar un producto que tiene stock disponible.'})
-
+        # Allow requesting reservations regardless of current stock. This is used to
+        # request restocking the inventory. Quantity is limited in the form (max 500).
         Reserva.objects.create(
             producto=producto,
-            cliente=cliente,
+            cliente=None,
             empleado=request.empleado,
             cantidad=cantidad,
             comentario=comentario,

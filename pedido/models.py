@@ -63,7 +63,7 @@ class Reserva(models.Model):
     ]
 
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
     empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
     
     cantidad = models.IntegerField(null=False, blank=False, default=1)
@@ -73,7 +73,8 @@ class Reserva(models.Model):
     comentario = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"Reserva {self.id} - {self.producto.nombre_producto} x{self.cantidad} para {self.cliente} ({self.estado})"
+        cliente_repr = f"{self.cliente}" if self.cliente else "(sin cliente)"
+        return f"Reserva {self.id} - {self.producto.nombre_producto} x{self.cantidad} {cliente_repr} ({self.estado})"
 
     class Meta:
         verbose_name = "Reserva"
