@@ -43,8 +43,13 @@ class ProductoForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        today = date.today().isoformat()
-        self.fields['fecha_vencimiento_producto'].widget.attrs.update({'min': today})
+        from datetime import timedelta
+        today = date.today()
+        max_date = today + timedelta(days=730)  # 2 años
+        self.fields['fecha_vencimiento_producto'].widget.attrs.update({
+            'min': today.isoformat(),
+            'max': max_date.isoformat()
+        })
 
 
     def clean_nombre_producto(self):
@@ -58,6 +63,23 @@ class ProductoForm(forms.Form):
             raise forms.ValidationError("El nombre es demasiado corto.")
 
         return nombre
+
+
+    def clean_fecha_vencimiento_producto(self):
+        fecha = self.cleaned_data.get("fecha_vencimiento_producto")
+        
+        if fecha:
+            from datetime import timedelta
+            today = date.today()
+            
+            if fecha < today:
+                raise forms.ValidationError("La fecha de vencimiento no puede ser anterior a hoy.")
+            
+            max_fecha = today + timedelta(days=730)  # 2 años
+            if fecha > max_fecha:
+                raise forms.ValidationError("La fecha de vencimiento no puede ser mayor a 2 años.")
+        
+        return fecha
 
 
     def clean_descripcion_producto(self):
