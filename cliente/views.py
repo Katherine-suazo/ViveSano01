@@ -18,6 +18,7 @@ def registro_clientes(request):
         if formulario_recibido.is_valid():
             datos = formulario_recibido.cleaned_data
             Cliente.objects.create(
+                rut_cliente = datos.get('rut_cliente') or None,
                 nombre_cliente = datos['nombre_cliente'],
                 apellido_cliente = datos['apellido_cliente'],
                 direccion_cliente = datos['direccion_cliente'],
@@ -60,6 +61,7 @@ def editar_cliente(request, id):
         if formulario_recibido.is_valid():
             datos = formulario_recibido.cleaned_data
 
+            cliente.rut_cliente = datos.get('rut_cliente') or None
             cliente.nombre_cliente = datos['nombre_cliente']
             cliente.apellido_cliente = datos['apellido_cliente']
             cliente.direccion_cliente = datos['direccion_cliente']
@@ -71,6 +73,7 @@ def editar_cliente(request, id):
         
     else:
         formulario_recibido = ClienteForm(initial = {
+            'rut_cliente': cliente.rut_cliente,
             'nombre_cliente': cliente.nombre_cliente,
             'apellido_cliente': cliente.apellido_cliente,
             'direccion_cliente': cliente.direccion_cliente,

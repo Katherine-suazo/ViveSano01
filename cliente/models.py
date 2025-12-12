@@ -4,6 +4,7 @@ from django.db import models
 # null = true    permite que el campo pueda quedar vacio en la base de datos
 
 class Cliente(models.Model):
+    rut_cliente = models.CharField(max_length=12, unique=True, null=True, blank=True)  # RUT/ID del cliente
     nombre_cliente = models.CharField(max_length=100, null = False, blank = False)
     apellido_cliente = models.CharField(max_length=100, null = False, blank = False)
     direccion_cliente = models.CharField(max_length=200)

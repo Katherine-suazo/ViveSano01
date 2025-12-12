@@ -101,8 +101,8 @@ def solicitar_reserva(request):
     if form.is_valid():
         datos = form.cleaned_data
         producto = datos['producto']
-        cliente = datos['cliente']
         cantidad = datos['cantidad']
+        fecha_entrega = datos['fecha_entrega']
         comentario = datos.get('comentario')
 
         if producto.stock_producto > 0:
@@ -110,9 +110,9 @@ def solicitar_reserva(request):
 
         Reserva.objects.create(
             producto=producto,
-            cliente=cliente,
             empleado=request.empleado,
             cantidad=cantidad,
+            fecha_entrega=fecha_entrega,
             comentario=comentario,
             estado=Reserva.ESTADO_SOLICITADO
         )

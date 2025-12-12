@@ -11,11 +11,12 @@
         <tr>
             <th>ID</th>
             <th>Producto</th>
-            <th>Cliente</th>
             <th>Empleado</th>
             <th>Cantidad</th>
+            <th>Fecha Entrega</th>
             <th>Estado</th>
             <th>Fecha Solicitud</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -23,9 +24,9 @@
         <tr>
             <td>{{ r.id }}</td>
             <td>{{ r.producto.nombre_producto }}</td>
-            <td>{{ r.cliente }}</td>
             <td>{{ r.empleado|cut:"_"|title }}</td>
             <td>{{ r.cantidad }}</td>
+            <td>{{ r.fecha_entrega|default:"-" }}</td>
             <td>{{ r.get_estado_display }}</td>
             <td>{{ r.fecha_solicitud }}</td>
             <td>
@@ -47,7 +48,7 @@
                 {% endif %}
 
                 {% if r.estado == 'CANCELADO' %}
-                <form method="post" action="{% url 'eliminar_recerva' r.id %}" style="display:inline-block;">
+                <form method="post" action="{% url 'eliminar_reserva' r.id %}" style="display:inline-block;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
                 </form>

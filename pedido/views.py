@@ -16,6 +16,12 @@ def lista_pedidos(request):
 @empleado_login_required
 def crear_pedido(request):
 
+    # Verificar si hay productos con stock antes de permitir crear pedido
+    productos_con_stock = Producto.objects.filter(stock_producto__gt=0)
+    if not productos_con_stock.exists():
+        messages.warning(request, '⚠️ No hay productos con stock disponible. Debe agregar stock a los productos primero.')
+        return redirect('lista_productos')
+
     if request.method == 'GET':
         formulario_recibido = PedidoForm()
         return render(request, 'pedido/crearPedido.html', {
@@ -28,6 +34,8 @@ def crear_pedido(request):
         if formulario_recibido.is_valid():
             datos = formulario_recibido.cleaned_data
             cliente = datos.get('cliente_pedido')
+            producto = datos.get('producto_pedido')
+            cantidad = datos.get('cantidad_producto')
 
             # Si NO viene cliente → usar Consumidor Final
             if not cliente:
@@ -36,19 +44,36 @@ def crear_pedido(request):
                     apellido_cliente='Final',
                     defaults={
                         'direccion_cliente': '',
-                        'telefono_cliente': '+56900000000',  # ← TELÉFONO VÁLIDO
+                        'telefono_cliente': '+56900000000',
                         'alergia_cliente': ''
                     }
                 )
 
-            Pedido.objects.create(
+            # Crear el pedido
+            pedido = Pedido.objects.create(
                 cliente_pedido=cliente,
                 estado_pedido=datos['estado_pedido'],
                 fecha_entrega_pedido=datos['fecha_entrega_pedido'],
                 empleado_pedido=datos['empleado_pedido'],
             )
 
-            messages.success(request, 'Pedido creado exitosamente')
+            # Crear el detalle del pedido con el producto
+            DetallePedido.objects.create(
+                pedido_detalle=pedido,
+                producto_detalle=producto,
+                cantidad_detalle=cantidad,
+                precio_unitario_detalle=producto.precio_producto
+            )
+
+            # Descontar stock del producto
+            producto.stock_producto -= cantidad
+            producto.save()
+
+            # Actualizar total del pedido
+            pedido.total_pedido = producto.precio_producto * cantidad
+            pedido.save()
+
+            messages.success(request, f'Pedido creado exitosamente con {cantidad} unidad(es) de {producto.nombre_producto}')
             return redirect('lista_pedidos')
 
         # Si no es válido, volver a mostrar el form
